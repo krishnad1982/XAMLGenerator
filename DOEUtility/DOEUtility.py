@@ -2,28 +2,32 @@ import sys
 import time
 from PySide.QtCore import *
 from PySide.QtGui import *
-import xml.etree.ElementTree as ET
-from xml.dom import minidom
-import csv
-from DoeTypes import *
+from Utility import *
 
 # custom class
-class SampleWindow(QWidget):
+class XamlWindow(QWidget):
     # constructor
     def __init__(self):
-        super(SampleWindow,self).__init__()
+        super(XamlWindow,self).__init__()
         self.initGUI()
     # initiating controls here
     def initGUI(self):
         # all controls
         self.layout = QFormLayout()
+        self.vbox = QVBoxLayout()
+
         self.lblAlgoAttribute = QLabel("Algo attribute name structure:")
         self.txtAlgoAttribute = QLineEdit()
+        # radio buttons and its groups
+        self.groupBox = QGroupBox("Select Algo Design")
+        self.radioSatndard = QRadioButton("Standard")
+        self.radioPairs = QRadioButton("Pairs")
+
         self.lblRow = QLabel("Number of rows:")
         self.txtRow = QLineEdit()
         self.lblCol = QLabel("Number of columns:")
         self.txtCol = QLineEdit()
-        self.btnGenerate = QPushButton("Generate")
+        self.btnGenerate = QPushButton("Generate XAML!")
         self.btnExit = QPushButton("Exit")
         #controls end here
         self.addWidget()
@@ -36,18 +40,27 @@ class SampleWindow(QWidget):
         self.txtCol.setPlaceholderText("Enter number of columns")
         self.btnGenerate.clicked.connect(self.generate)
         self.btnExit.clicked.connect(self.exitApp)
+        
         self.layout.addWidget(self.lblAlgoAttribute)
         self.layout.addWidget(self.txtAlgoAttribute)
+        # group box for radio buttons
+        self.vbox.addWidget(self.radioSatndard)
+        self.vbox.addWidget(self.radioPairs)
+        self.groupBox.setLayout(self.vbox)
+        self.layout.addWidget(self.groupBox)
+        # radio button group button ends here
         self.layout.addWidget(self.lblRow)
         self.layout.addWidget(self.txtRow)
         self.layout.addWidget(self.lblCol)
         self.layout.addWidget(self.txtCol)
         self.layout.addWidget(self.btnGenerate)
         self.layout.addWidget(self.btnExit)
+        
+       
         self.setLayout(self.layout)
     # window closing event
     def closeEvent(self,event):
-        respone = self.msgDialog("Information","Do you want to exit from the app?")
+        respone = msgDialog(self,"Information","Do you want to exit from the app?")
         if respone == "Y":
            QApplication.instance().quit()
            event.accept()
@@ -75,63 +88,21 @@ class SampleWindow(QWidget):
     def setTooltipFont(self):
         QToolTip.setFont(QFont("Decorative",8,QFont.Bold))
 
-    # contruct yes or no confirmation dialog box
-    def msgDialog(self,title,msg):
-        userInfo = QMessageBox.question(self,title,msg,QMessageBox.Yes | QMessageBox.No)
-        if userInfo == QMessageBox.Yes:
-            return "Y"
-        if userInfo == QMessageBox.No:
-            return "N"
     # switch dictionary values
-    options = {"DateTime" : DateTime,"TextBlock" : TextBlock,}
-    # xml filtering
-    def generateXML(self):
-        dom = minidom.parse(r"skins/standard.xaml")
-        for node in dom.getElementsByTagName('Grid'):
-            if node.getAttribute('x:Name') == "AlgoGrid":
-                rowCount = int(self.txtRow.text())
-                colCount = int(self.txtCol.text())
-                attributeName = self.txtAlgoAttribute.text()
-                # creating rows
-                i = 0
-                while i < rowCount:
-                    node.appendChild(CreateRows(self,dom))
-                    i = i + 1
-                # creating cols
-                i = 0
-                currWidth = "Auto"
-                while i < rowCount:
-                    node.appendChild(CreateColumns(self,dom,currWidth))
-                    currWidth = "2*" if currWidth is "Auto" else "Auto"
-                    i = i + 1
-                #create algo controls
-                with open("storage/test.csv") as csvfile:
-                    reader = csv.DictReader(csvfile)
-                    for row in reader:
-                        node.appendChild(self.options["TextBlock"](self,dom,row["Param"],row["Row"],int(row["Column"]) - 1))
-                        node.appendChild(self.options[row["Type"]](self,dom,row["Param"],row["Row"],row["Column"],attributeName))
-                dom.writexml(open("skins/standard.xaml","w"))
-            else:
-                pass
+    options = {"DateTime" : DateTime,"TextBlock" : TextBlock,"ComboBox":ComboBox,}
+
     # generate xaml
     def generate(self):
         if self.txtRow.text() is not "" and self.txtCol.text() is not "" and self.txtAlgoAttribute.text() is not "":
-            self.generateXML()
+            fielName ="skins/standard.xaml" if self.radioSatndard.isCheckable else "skins/pairs.xaml"
+            csvPath="storage/test.csv"
+            generateXML(self,fielName,csvPath)
         else:
-            self.showMessage("Mandatory!","Values required to generate XAML","Attribute name structure, row and col fileds are mandatory")
-    # generate info messsage
-    def showMessage(self,title,shortmsg,detailmsg):
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Information)
-        msg.setText(shortmsg)
-        #msg.setInformativeText(message)
-        msg.setWindowTitle(title)
-        msg.setDetailedText(detailmsg)
-        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-        msg.exec_()
+            showMessage(self,"Mandatory!","Values required to generate XAML","Attribute name structure, row and col fileds are mandatory")
+
     # exit app
     def exitApp(self):
-        respone = self.msgDialog("Information","Do you want to exit from the app?")
+        respone = msgDialog(self,"Information","Do you want to exit from the app?")
         if respone == "Y":
            QApplication.instance().quit()
         else:
@@ -140,8 +111,7 @@ class SampleWindow(QWidget):
 def main():
     try:
         myApp = QApplication(sys.argv)
-        myWindow = SampleWindow()
-        
+        myWindow = XamlWindow()
         # Execute the Application and Exit
         myApp.exec_()
         sys.exit(0)

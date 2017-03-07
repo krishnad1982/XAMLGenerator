@@ -1,3 +1,4 @@
-Row,Column,Type,Param
-0,1,DateTime,StartTime
-1,1,DateTime,EndTime
+Row,Column,Type,Param,Mandatory
+0,1,DateTime,StartTime,False
+1,1,DateTime,EndTime,False
+2,1,ComboBox,Order Validity,False

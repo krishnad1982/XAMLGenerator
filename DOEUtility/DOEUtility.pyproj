@@ -4,13 +4,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>df5f6726-8e79-46b8-a708-9ce778fff3de</ProjectGuid>
-    <ProjectHome>.</ProjectHome>
-    <StartupFile>DOEUtility.py</StartupFile>
+    <ProjectHome>
+    </ProjectHome>
+    <StartupFile>DoeUtility.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>DOEUtility</Name>
+    <Name>DoeUtility</Name>
     <RootNamespace>DOEUtility</RootNamespace>
     <InterpreterId>{2af0f10d-7135-4994-9156-5d01c9c11b7e}</InterpreterId>
     <InterpreterVersion>3.4</InterpreterVersion>
@@ -27,7 +28,10 @@
     <Compile Include="DoeTypes.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DOEUtility.py" />
+    <Compile Include="DoeUtility.py" />
+    <Compile Include="Utility.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="{2af0f10d-7135-4994-9156-5d01c9c11b7e}\3.4" />

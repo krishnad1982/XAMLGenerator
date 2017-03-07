@@ -343,6 +343,7 @@
 
 
 
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
@@ -356,9 +357,19 @@
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource TextBlockStyle}" Text="StartTime:" x:Name="lblStartTime"/>
-                    <i:DateTimePicker Focusable="False" Grid.Column="1" Grid.Row="0" IsDatePicker="False" IsTimePicker="True" SelectedDateTime="{Binding ExternalAlgoProperties[(i:Description)SA-Hermes-Timer-StartTime, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" Style="{StaticResource TextBlockStyle}" x:Name="StartTime"/>
+                    <i:DateTimePicker Focusable="False" Grid.Column="1" Grid.Row="0" IsDatePicker="False" IsTimePicker="True" SelectedDateTime="{Binding Path=ExternalAlgoProperties[(i:Description)SA-Hermes-Timer-StartTime].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" Style="{StaticResource TextBlockStyle}" x:Name="StartTime"/>
                     <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource TextBlockStyle}" Text="EndTime:" x:Name="lblEndTime"/>
-                    <i:DateTimePicker Focusable="False" Grid.Column="1" Grid.Row="1" IsDatePicker="False" IsTimePicker="True" SelectedDateTime="{Binding ExternalAlgoProperties[(i:Description)SA-Hermes-Timer-EndTime, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" Style="{StaticResource TextBlockStyle}" x:Name="EndTime"/>
+                    <i:DateTimePicker Focusable="False" Grid.Column="1" Grid.Row="1" IsDatePicker="False" IsTimePicker="True" SelectedDateTime="{Binding Path=ExternalAlgoProperties[(i:Description)SA-Hermes-Timer-EndTime].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" Style="{StaticResource TextBlockStyle}" x:Name="EndTime"/>
+                    <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource TextBlockStyle}" Text="Order Validity:" x:Name="lblOrderValidity"/>
+                    <i:ComboBox CloseDropDownOnTab="True" Grid.Column="1" Grid.Row="2" IsEditable="False" IsSorted="False" ItemsSource="{Binding Path=ExternalAlgoProperties[(i:Description)SA-Hermes-Timer-OrderValidity].AvailableItems, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" Style="{StaticResource TextBlockStyle}" x:Name="OrderValidity">
+                        <i:ComboBox.SelectedItem>
+                            <Binding Path="Binding Path=ExternalAlgoProperties[(i:Description)SA-Hermes-Timer-OrderValidity].AvailableItems, ValidatesOnDataErrors=True, ValidatesOnExceptions=True" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True" ValidatesOnExceptions="True">
+                                <Binding.ValidationRules>
+                                    <i:ValueEmptyValidationRule ElementId="OrderValidity" ValidatesOnTargetUpdated="True"/>
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </i:ComboBox.SelectedItem>
+                    </i:ComboBox>
                 </Grid>
             </GroupBox>
             <!--Ending Algo Details-->

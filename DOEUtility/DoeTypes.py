@@ -12,7 +12,7 @@ def CreateColumns(self,dom,currWidth):
     parent.appendChild(child)
     return parent
 
-def TextBlock(self,dom,param,row,col):
+def TextBlock(self,dom,param,row,col,isMandaory=False):
     parent = dom.createElement("TextBlock")
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
@@ -21,8 +21,8 @@ def TextBlock(self,dom,param,row,col):
     parent.setAttribute('Text', "{}:".format(param))
     return parent
 
-def DateTime(self,dom,param,row,col,attributeName):
-    binding = "Binding ExternalAlgoProperties[(i:Description){}-{}, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace(" ",""))
+def DateTime(self,dom,param,row,col,attributeName,isMandaory):
+    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace(" ",""))
     parent = dom.createElement("i:DateTimePicker")
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
@@ -32,4 +32,38 @@ def DateTime(self,dom,param,row,col,attributeName):
     parent.setAttribute('IsDatePicker', "False")
     parent.setAttribute('IsTimePicker', "True")
     parent.setAttribute('SelectedDateTime', "{" + binding + "}")
+    return parent
+
+def ComboBox(self,dom,param,row,col,attributeName,isMandaory):
+    binding=""
+    if not isMandaory:
+        binding = "ExternalAlgoProperties[(i:Description){}-{}].Value".format(attributeName,param.replace(" ",""))
+    else:
+        binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].AvailableItems, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace(" ",""))
+       
+    enabled = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace(" ",""))
+    parent = dom.createElement("i:ComboBox")
+    parent.setAttribute('Grid.Row', str(row))
+    parent.setAttribute('Grid.Column', str(col))
+    parent.setAttribute('x:Name', param.replace(" ",""))
+    parent.setAttribute('Style', "{StaticResource TextBlockStyle}")
+    parent.setAttribute('IsSorted', "False")
+    parent.setAttribute('IsEditable', "False")
+    parent.setAttribute('CloseDropDownOnTab', "True")
+    parent.setAttribute('ItemsSource', "{" + binding + "}")
+    if isMandaory:
+        child = dom.createElement("i:ComboBox.SelectedItem")
+        firstChild=dom.createElement("Binding")
+        firstChild.setAttribute('Path', binding)
+        firstChild.setAttribute('ValidatesOnDataErrors', 'True')
+        firstChild.setAttribute('ValidatesOnExceptions', 'True')
+        firstChild.setAttribute('UpdateSourceTrigger', 'PropertyChanged')
+        child.appendChild(firstChild)
+        secondChild=dom.createElement("Binding.ValidationRules")
+        firstChild.appendChild(secondChild)
+        thirdChild=dom.createElement("i:ValueEmptyValidationRule")
+        thirdChild.setAttribute('ElementId', param.replace(" ",""))
+        thirdChild.setAttribute('ValidatesOnTargetUpdated', 'True')
+        secondChild.appendChild(thirdChild)
+        parent.appendChild(child)
     return parent
