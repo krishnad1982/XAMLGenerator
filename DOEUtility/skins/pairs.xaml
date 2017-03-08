@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+﻿<?xml version="1.0" ?>
 <i:Skin d:DataContext="{d:DesignInstance Type=i:DesignOrder, IsDesignTimeCreatable=True}" mc:Ignorable="d" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:i="http://schemas.iress.com/iosplus/dynamicoe/2015" xmlns:ic="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:w="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <i:Skin.Resources>
         <!--Actions-->
@@ -10,8 +10,8 @@
         <i:ContainsConverter x:Key="ContainsConverter"/>
         <i:CompareToConverter x:Key="CompareToConverter"/>
         <i:NotEqualsConverter x:Key="NotEqualsConverter"/>
-        <i:StringFormatMultiConverter x:Key="StringFormatMultiConverter"/>
-        <i:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <i:StringNotEmptyConverter x:Key="StringNotEmptyConverter"/>
+        <i:PostfixMathConverter x:Key="PostfixMathConverter"/>
         <i:PriceFormat PriceIncrement="{Binding PriceIncrement.Value}" PriceMultiplier="{Binding SecurityDetail.PriceMultiplier}" x:Key="PriceFormat"/>
 
         <!--Brushes-->
@@ -35,7 +35,7 @@
         </Style>
         <Style BasedOn="{StaticResource BasicStyle}" TargetType="Canvas" x:Key="FixedLogoStyle">
             <Setter Property="Width" Value="165"/>
-            <Setter Property="Height" Value="75"/>
+            <Setter Property="Height" Value="92"/>
             <Setter Property="VerticalAlignment" Value="Top"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
@@ -133,6 +133,231 @@
         </ControlTemplate>
         <!--End Of Destination Template Content -->
 
+        <!--Pair Analytics Details Template Content -->
+        <ControlTemplate TargetType="ContentControl" x:Key="PairAnalyticsInfo">
+            <Grid Style="{StaticResource GridMarketDataStyle}" x:Name="StockGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!--Section holds side specific value bindings irrespective of the arrangement of the child orders.
+                These values are used in formulas later.-->
+                <StackPanel Grid.Column="0" Grid.Row="0" Visibility="Collapsed" x:Name="LookupValues">
+                    <TextBlock x:Name="SellBid">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding Legs[0].QuoteDetail.BidPrice}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Legs[1].Side.IsSell, Mode=OneWay}" Value="True">
+                                        <Setter Property="Text" Value="{Binding Legs[1].QuoteDetail.BidPrice}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock x:Name="BuyAsk">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding Legs[0].QuoteDetail.AskPrice}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Legs[1].Side.IsBuy, Mode=OneWay}" Value="True">
+                                        <Setter Property="Text" Value="{Binding Legs[1].QuoteDetail.AskPrice}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock x:Name="BuyBid">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding Legs[0].QuoteDetail.BidPrice}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Legs[1].Side.IsBuy, Mode=OneWay}" Value="True">
+                                        <Setter Property="Text" Value="{Binding Legs[1].QuoteDetail.BidPrice}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock x:Name="SellAsk">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding Legs[0].QuoteDetail.AskPrice}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Legs[1].Side.IsSell, Mode=OneWay}" Value="True">
+                                        <Setter Property="Text" Value="{Binding Legs[1].QuoteDetail.AskPrice}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock x:Name="BuyVWAP">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding Legs[0].QuoteDetail.MarketVwap}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Legs[1].Side.IsBuy, Mode=OneWay}" Value="True">
+                                        <Setter Property="Text" Value="{Binding Legs[1].QuoteDetail.MarketVwap}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock x:Name="SellVWAP">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding Legs[0].QuoteDetail.MarketVwap}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Legs[1].Side.IsSell, Mode=OneWay}" Value="True">
+                                        <Setter Property="Text" Value="{Binding Legs[1].QuoteDetail.MarketVwap}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock x:Name="BuyLastPrice">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding Legs[0].QuoteDetail.LastPrice}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Legs[1].Side.IsBuy, Mode=OneWay}" Value="True">
+                                        <Setter Property="Text" Value="{Binding Legs[1].QuoteDetail.LastPrice}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock x:Name="SellLastPrice">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding Legs[0].QuoteDetail.LastPrice}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Legs[1].Side.IsSell, Mode=OneWay}" Value="True">
+                                        <Setter Property="Text" Value="{Binding Legs[1].QuoteDetail.LastPrice}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource TextBlockMarketStyle}" Text="Aggressive Ratio:"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource TextBlockMarketStyle}" Text="inverted Ratio:"/>
+                <TextBlock Grid.Column="0" Grid.Row="2" Style="{StaticResource TextBlockMarketStyle}" Text="Passive Ratio:"/>
+                <TextBlock Grid.Column="0" Grid.Row="3" Style="{StaticResource TextBlockMarketStyle}" Text="VWAP Ratio:"/>
+                <TextBlock Grid.Column="0" Grid.Row="4" Style="{StaticResource TextBlockMarketStyle}" Text="Last Ratio:"/>
+
+                <TextBlock Grid.Column="2" Grid.Row="0" Style="{StaticResource TextBlockMarketStyle}" Text="Aggressive Spread:"/>
+                <TextBlock Grid.Column="2" Grid.Row="1" Style="{StaticResource TextBlockMarketStyle}" Text="inverted Spread:"/>
+                <TextBlock Grid.Column="2" Grid.Row="2" Style="{StaticResource TextBlockMarketStyle}" Text="Passive Spread:"/>
+                <TextBlock Grid.Column="2" Grid.Row="3" Style="{StaticResource TextBlockMarketStyle}" Text="VWAP Spread:"/>
+                <TextBlock Grid.Column="2" Grid.Row="4" Style="{StaticResource TextBlockMarketStyle}" Text="Last Spread:"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="0" Style="{StaticResource TextBlockMarketDataStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource PostfixMathConverter}" StringFormat="{}{0:F4}">
+                            <Binding ElementName="BuyAsk" Mode="OneWay" Path="Text"/>
+                            <Binding ElementName="SellBid" Mode="OneWay" Path="Text"/>
+                            <Binding Source="Divide"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource TextBlockMarketDataStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource PostfixMathConverter}" StringFormat="{}{0:F4}">
+                            <Binding ElementName="SellBid" Mode="OneWay" Path="Text"/>
+                            <Binding ElementName="BuyAsk" Mode="OneWay" Path="Text"/>
+                            <Binding Source="Divide"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="2" Style="{StaticResource TextBlockMarketDataStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource PostfixMathConverter}" StringFormat="{}{0:F4}">
+                            <Binding ElementName="BuyBid" Mode="OneWay" Path="Text"/>
+                            <Binding ElementName="SellAsk" Mode="OneWay" Path="Text"/>
+                            <Binding Source="Divide"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="3" Style="{StaticResource TextBlockMarketDataStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource PostfixMathConverter}" StringFormat="{}{0:F4}">
+                            <Binding ElementName="BuyVWAP" Mode="OneWay" Path="Text"/>
+                            <Binding ElementName="SellVWAP" Mode="OneWay" Path="Text"/>
+                            <Binding Source="Divide"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="4" Style="{StaticResource TextBlockMarketDataStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource PostfixMathConverter}" StringFormat="{}{0:F4}">
+                            <Binding ElementName="BuyLastPrice" Mode="OneWay" Path="Text"/>
+                            <Binding ElementName="SellLastPrice" Mode="OneWay" Path="Text"/>
+                            <Binding Source="Divide"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+
+                <TextBlock Grid.Column="3" Grid.Row="0" Style="{StaticResource TextBlockMarketDataStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource PostfixMathConverter}" StringFormat="{}{0}">
+                            <Binding ElementName="BuyAsk" Mode="OneWay" Path="Text"/>
+                            <Binding ElementName="SellBid" Mode="OneWay" Path="Text"/>
+                            <Binding Source="Subtract"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Grid.Column="3" Grid.Row="1" Style="{StaticResource TextBlockMarketDataStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource PostfixMathConverter}" StringFormat="{}{0}">
+                            <Binding ElementName="SellBid" Mode="OneWay" Path="Text"/>
+                            <Binding ElementName="BuyAsk" Mode="OneWay" Path="Text"/>
+                            <Binding Source="Subtract"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Grid.Column="3" Grid.Row="2" Style="{StaticResource TextBlockMarketDataStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource PostfixMathConverter}" StringFormat="{}{0}">
+                            <Binding ElementName="BuyBid" Mode="OneWay" Path="Text"/>
+                            <Binding ElementName="SellAsk" Mode="OneWay" Path="Text"/>
+                            <Binding Source="Subtract"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Grid.Column="3" Grid.Row="3" Style="{StaticResource TextBlockMarketDataStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource PostfixMathConverter}" StringFormat="{}{0:F4}">
+                            <Binding ElementName="BuyVWAP" Mode="OneWay" Path="Text"/>
+                            <Binding ElementName="SellVWAP" Mode="OneWay" Path="Text"/>
+                            <Binding Source="Subtract"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock Grid.Column="3" Grid.Row="4" Style="{StaticResource TextBlockMarketDataStyle}">
+                    <TextBlock.Text>
+                        <MultiBinding Converter="{StaticResource PostfixMathConverter}" StringFormat="{}{0}">
+                            <Binding ElementName="BuyLastPrice" Mode="OneWay" Path="Text"/>
+                            <Binding ElementName="SellLastPrice" Mode="OneWay" Path="Text"/>
+                            <Binding Source="Subtract"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Grid>
+        </ControlTemplate>
+        <!--End Of Pair Analytics Details Template Content-->
+
         <!--Market Details Template Content -->
         <ControlTemplate TargetType="ContentControl" x:Key="MarketInfo">
             <Grid Style="{StaticResource GridMarketDataStyle}" x:Name="StockGrid">
@@ -169,57 +394,9 @@
         </ControlTemplate>
         <!--End Of Market Details Template Content-->
 
-        <!--Side Template Content -->
-        <ControlTemplate TargetType="ContentControl" x:Key="SideInfo">
-            <Grid Background="{i:SideBrushBinding Side.Code}" x:Name="SideGrid">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
-                <ItemsControl Grid.Column="0" Grid.Row="0" KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.IsTabStop="False" KeyboardNavigation.TabNavigation="Once" Style="{StaticResource BasicStyle}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                            </Grid>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.BindingGroup>
-                        <Binding Path="Side.Code" ValidatesOnDataErrors="True" ValidatesOnExceptions="True"/>
-                    </ItemsControl.BindingGroup>
-
-                    <i:RadioButton Background="{i:SideBrushBinding Source={x:Static i:SideCodes.Buy}}" Content="_Buy" Grid.Column="0" Grid.Row="0" IsChecked="{Binding Side.Code, ConverterParameter={x:Static i:SideCodes.Buy}, Converter={StaticResource EqualsConverter}}" Style="{StaticResource SideSelectButtonStyle}" x:Name="SideBuy">
-                        <d:RadioButton.IsEnabled>
-                            <MultiBinding Converter="{StaticResource LogicalAndConverter}">
-                                <Binding Converter="{StaticResource ContainsConverter}" ConverterParameter="{x:Static i:SideCodes.Buy}" Path="Side.AvailableItems"/>
-                                <Binding Path="Side.IsEditable"/>
-                            </MultiBinding>
-                        </d:RadioButton.IsEnabled>
-                    </i:RadioButton>
-                    <i:RadioButton Background="{i:SideBrushBinding Source={x:Static i:SideCodes.Sell}}" Content="_Sell" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Side.Code, ConverterParameter={x:Static i:SideCodes.Sell}, Converter={StaticResource EqualsConverter}}" Style="{StaticResource SideSelectButtonStyle}" x:Name="SideSell">
-                        <d:RadioButton.IsEnabled>
-                            <MultiBinding Converter="{StaticResource LogicalAndConverter}">
-                                <Binding Converter="{StaticResource ContainsConverter}" ConverterParameter="{x:Static i:SideCodes.Sell}" Path="Side.AvailableItems"/>
-                                <Binding Path="Side.IsEditable"/>
-                            </MultiBinding>
-                        </d:RadioButton.IsEnabled>
-                    </i:RadioButton>
-                </ItemsControl>
-            </Grid>
-        </ControlTemplate>
-        <!--End Of Side Template Content -->
-
         <!--Order Details Template Content -->
         <ControlTemplate TargetType="ContentControl" x:Key="OrderInfo">
-            <Grid x:Name="OrderGrid">
+            <Grid x:Name="OrderGridSell">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -240,8 +417,8 @@
                     </w:Interaction.Triggers>
                     <i:SecurityPicker.IsEnabled>
                         <MultiBinding Converter="{StaticResource LogicalAndConverter}">
-                            <Binding Converter="{StaticResource EqualsConverter}" ConverterParameter="0" Path="BuyLeg.ParentOrderNumber"/>
-                            <Binding Converter="{StaticResource EqualsConverter}" ConverterParameter="0" Path="SellLeg.ParentOrderNumber"/>
+                            <Binding Converter="{StaticResource EqualsConverter}" ConverterParameter="0" Path="ParentOrderNumber"/>
+                            <Binding Converter="{StaticResource EqualsConverter}" ConverterParameter="0" Path="ParentOrderNumber"/>
                             <Binding Path="Security.IsEditable"/>
                         </MultiBinding>
                     </i:SecurityPicker.IsEnabled>
@@ -313,8 +490,8 @@
                         <ContentControl Focusable="False" Grid.Column="1" Grid.Row="0" Template="{StaticResource DestinationInfo}" x:Name="DestControl"/>
                     </Grid>
                 </GroupBox>
-                <GroupBox Grid.Column="1" Grid.Row="0" Header="Market Details" Style="{StaticResource GroupBoxStyle}" VerticalAlignment="Top" x:Name="Market">
-                    <ContentControl Focusable="False" Template="{StaticResource MarketInfo}" x:Name="MarketControl"/>
+                <GroupBox Grid.Column="1" Grid.Row="0" Header="Pair Analytics" Style="{StaticResource GroupBoxStyle}" VerticalAlignment="Top" x:Name="Market">
+                    <ContentControl Focusable="False" Template="{StaticResource PairAnalyticsInfo}" x:Name="PairAnalyticsControl"/>
                 </GroupBox>
             </Grid>
             <!--End Of Header Template Implementation-->
@@ -323,22 +500,33 @@
             <Grid x:Name="SubOrderGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <GroupBox Grid.Column="0" Grid.Row="0" Header="Side" Style="{StaticResource SideInfoGroupBoxStyle}" x:Name="Side">
-                    <ContentControl Focusable="False" Template="{StaticResource SideInfo}" x:Name="SideControl"/>
+                <GroupBox DataContext="{Binding Legs[0]}" Grid.Column="0" Grid.Row="0" Header="Market Details Sell" Style="{StaticResource SideInfoGroupBoxStyle}" x:Name="MarketDetailsSell">
+                    <ContentControl Focusable="False" Template="{StaticResource MarketInfo}" x:Name="MarketSellControl"/>
                 </GroupBox>
-                <GroupBox Grid.Column="1" Grid.Row="0" Header="Order Details" Style="{StaticResource GroupBoxStyle}" x:Name="OrderDetails">
-                    <ContentControl Focusable="False" Template="{StaticResource OrderInfo}" x:Name="OrderControl"/>
+                <GroupBox DataContext="{Binding Legs[0]}" Grid.Column="0" Grid.Row="1" Header="Order Details Sell" Style="{StaticResource SideInfoGroupBoxStyle}" x:Name="OrderDetailsSell">
+                    <Border Background="{i:SideBrushBinding Source={x:Static i:SideCodes.Sell}}">
+                        <ContentControl Focusable="False" Template="{StaticResource OrderInfo}" x:Name="OrderSellControl"/>
+                    </Border>
+                </GroupBox>
+                <GroupBox DataContext="{Binding Legs[1]}" Grid.Column="1" Grid.Row="0" Header="Market Details Buy" Style="{StaticResource SideInfoGroupBoxStyle}" x:Name="MarketDetailsBuy">
+                    <ContentControl Focusable="False" Template="{StaticResource MarketInfo}" x:Name="MarketBuyControl"/>
+                </GroupBox>
+                <GroupBox DataContext="{Binding Legs[1]}" Grid.Column="1" Grid.Row="1" Header="Order Details Buy" Style="{StaticResource SideInfoGroupBoxStyle}" x:Name="OrderDetailsBuy">
+                    <Border Background="{i:SideBrushBinding Source={x:Static i:SideCodes.Buy}}">
+                        <ContentControl Focusable="False" Template="{StaticResource OrderInfo}" x:Name="OrderBuyControl"/>
+                    </Border>
                 </GroupBox>
             </Grid>
             <!--End Of Order Template Implementation-->
 
             <!--Algo Details Starting-->
-            <GroupBox Header="Timer Algo Details" KeyboardNavigation.TabNavigation="Local" Style="{StaticResource GroupBoxStyle}" x:Name="AlgoDetails">
+            <GroupBox Header="Volume Pair Algo Details" KeyboardNavigation.TabNavigation="Local" Style="{StaticResource GroupBoxStyle}" x:Name="AlgoDetails">
                 <Grid x:Name="AlgoGrid">
 
                     

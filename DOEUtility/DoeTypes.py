@@ -34,9 +34,9 @@ def DateTime(self,dom,param,row,col,attributeName,isMandaory):
     parent.setAttribute('SelectedDateTime', "{" + binding + "}")
     return parent
 
-def ComboBox(self,dom,param,row,col,attributeName,isMandaory):
-    binding=""
-    if not isMandaory:
+def ComboBox(self,dom,param,row,col,attributeName,isMandatory):
+    binding = ""
+    if eval(isMandatory):
         binding = "ExternalAlgoProperties[(i:Description){}-{}].Value".format(attributeName,param.replace(" ",""))
     else:
         binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].AvailableItems, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace(" ",""))
@@ -51,19 +51,20 @@ def ComboBox(self,dom,param,row,col,attributeName,isMandaory):
     parent.setAttribute('IsEditable', "False")
     parent.setAttribute('CloseDropDownOnTab', "True")
     parent.setAttribute('ItemsSource', "{" + binding + "}")
-    if isMandaory:
+    if eval(isMandatory):
         child = dom.createElement("i:ComboBox.SelectedItem")
-        firstChild=dom.createElement("Binding")
+        firstChild = dom.createElement("Binding")
         firstChild.setAttribute('Path', binding)
         firstChild.setAttribute('ValidatesOnDataErrors', 'True')
         firstChild.setAttribute('ValidatesOnExceptions', 'True')
         firstChild.setAttribute('UpdateSourceTrigger', 'PropertyChanged')
         child.appendChild(firstChild)
-        secondChild=dom.createElement("Binding.ValidationRules")
+        secondChild = dom.createElement("Binding.ValidationRules")
         firstChild.appendChild(secondChild)
-        thirdChild=dom.createElement("i:ValueEmptyValidationRule")
+        thirdChild = dom.createElement("i:ValueEmptyValidationRule")
         thirdChild.setAttribute('ElementId', param.replace(" ",""))
         thirdChild.setAttribute('ValidatesOnTargetUpdated', 'True')
         secondChild.appendChild(thirdChild)
         parent.appendChild(child)
+
     return parent

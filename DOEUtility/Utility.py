@@ -1,8 +1,11 @@
+import os
 from PySide.QtCore import *
 from PySide.QtGui import *
 from xml.dom import minidom
 from DoeTypes import *
 import csv
+from Config import *
+from shutil import copyfile
 
 # generate info messsage
 def showMessage(self,title,shortmsg,detailmsg):
@@ -51,5 +54,13 @@ def generateXML(self,fileName,csvPath):
                         node.appendChild(self.options["TextBlock"](self, dom, row["Param"], row["Row"], int(row["Column"]) - 1))
                         node.appendChild(self.options[row["Type"]](self, dom, row["Param"], row["Row"], row["Column"], attributeName,row["Mandatory"]))
         dom.writexml(open(fileName, "w"))
+        copyFile(self,fileName)
     except IOError:
         showMessage(self, "File information!", "No such file or directory found ", "No such file or directory found")
+# copy file
+def copyFile(self,fileName):
+     src = readOutputPath(self)
+     splitOne = fileName.split("/")
+     copyfile(fileName,src + splitOne[1])
+     if os.path.isfile(fileName):
+         os.remove(fileName)

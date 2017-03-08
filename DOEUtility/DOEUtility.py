@@ -1,8 +1,10 @@
+import os
 import sys
 import time
 from PySide.QtCore import *
 from PySide.QtGui import *
 from Utility import *
+from builtins import eval
 
 # custom class
 class XamlWindow(QWidget):
@@ -94,9 +96,15 @@ class XamlWindow(QWidget):
     # generate xaml
     def generate(self):
         if self.txtRow.text() is not "" and self.txtCol.text() is not "" and self.txtAlgoAttribute.text() is not "":
-            fielName ="skins/standard.xaml" if self.radioSatndard.isCheckable else "skins/pairs.xaml"
-            csvPath="storage/test.csv"
-            generateXML(self,fielName,csvPath)
+            baseFileName = "skins/standard.xaml" if self.radioSatndard.isChecked() else "skins/pairs.xaml"
+            # creating a dummy file to add algo controls
+            splitOne = baseFileName.split("/")
+            splitTwo = splitOne[1].split(".")
+            fileName = "{}/{}prg.{}".format(splitOne[0],splitTwo[0],splitTwo[1])
+            copyfile(baseFileName,fileName)
+            # creating dummy ends here
+            csvPath = "storage/test.csv"
+            generateXML(self,fileName,csvPath)
         else:
             showMessage(self,"Mandatory!","Values required to generate XAML","Attribute name structure, row and col fileds are mandatory")
 
