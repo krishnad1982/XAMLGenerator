@@ -1,12 +1,10 @@
-def CreateRows(self,dom):
-    parent = dom.createElement("Grid.RowDefinitions")
+def CreateRows(self,dom,parent):
     child = dom.createElement("RowDefinition")
     child.setAttribute('Height', 'Auto')
     parent.appendChild(child)
     return parent
 
-def CreateColumns(self,dom,currWidth):
-    parent = dom.createElement("Grid.ColumnDefinitions")
+def CreateColumns(self,dom,parent,currWidth):
     child = dom.createElement("ColumnDefinition")
     child.setAttribute('Width', currWidth)
     parent.appendChild(child)
@@ -27,7 +25,7 @@ def DateTime(self,dom,param,row,col,attributeName,isMandaory):
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
     parent.setAttribute('x:Name', param.replace(" ",""))
-    parent.setAttribute('Style', "{StaticResource TextBlockStyle}")
+    parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('Focusable', "False")
     parent.setAttribute('IsDatePicker', "False")
     parent.setAttribute('IsTimePicker', "True")
@@ -46,7 +44,7 @@ def ComboBox(self,dom,param,row,col,attributeName,isMandatory):
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
     parent.setAttribute('x:Name', param.replace(" ",""))
-    parent.setAttribute('Style', "{StaticResource TextBlockStyle}")
+    parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('IsSorted', "False")
     parent.setAttribute('IsEditable', "False")
     parent.setAttribute('CloseDropDownOnTab', "True")
@@ -77,7 +75,7 @@ def NumericUpDown(self,dom,param,row,col,attributeName,isMandatory):
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
     parent.setAttribute('x:Name', param.replace(" ",""))
-    parent.setAttribute('Style', "{StaticResource TextBlockStyle}")
+    parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('DisplayFormat', "0")
     parent.setAttribute('RoundingDecimalPlaces', "0")
     parent.setAttribute('Minimum', "1")
@@ -95,7 +93,7 @@ def CheckBox(self,dom,param,row,col,attributeName,isMandatory):
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
     parent.setAttribute('x:Name', param.replace(" ",""))
-    parent.setAttribute('Style', "{StaticResource TextBlockStyle}")
+    parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('IsChecked', "{" + binding + "}")
     parent.setAttribute('IsEnabled', "{" + editable + "}")
     return parent

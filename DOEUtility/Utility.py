@@ -1,6 +1,6 @@
 import os
-from PySide.QtCore import *
-from PySide.QtGui import *
+import sys
+from PyQt5.QtWidgets import QMessageBox
 from xml.dom import minidom
 from DoeTypes import *
 import csv
@@ -38,13 +38,17 @@ def generateXML(self,fileName,csvPath):
                 # creating rows
                 i = 0
                 while i < rowCount:
-                    node.appendChild(CreateRows(self, dom))
+                    if i == 0:
+                        parent = dom.createElement("Grid.RowDefinitions")
+                    node.appendChild(CreateRows(self, dom, parent))
                     i+=1
                 # creating cols
                 i = 0
                 currWidth = "Auto"
                 while i < rowCount:
-                    node.appendChild(CreateColumns(self, dom, currWidth))
+                    if i == 0:
+                        parent = dom.createElement("Grid.ColumnDefinitions")
+                    node.appendChild(CreateColumns(self, dom,parent,currWidth))
                     currWidth = "2*" if currWidth is "Auto" else "Auto"
                     i+=1
                 # create algo controls
@@ -55,13 +59,18 @@ def generateXML(self,fileName,csvPath):
                         node.appendChild(self.options[row["Type"]](self, dom, row["Param"], row["Row"], row["Column"], attributeName,row["Mandatory"]))
         dom.writexml(open(fileName, "w"))
         copyFile(self,fileName)
+        showMessage(self, "Information", "Click show details to see the output file path ", (readOutputPath(self))["output"])
     except IOError:
         showMessage(self, "File information!", "No such file or directory found ", "No such file or directory found")
 # copy file
 def copyFile(self,fileName):
-     src = (readOutputPath(self))["output"]
-     splitOne = fileName.split("/")
-     copyfile(fileName,src + splitOne[1])
-     # remove temp file from the project root skin directory
-     if os.path.isfile(fileName):
-         os.remove(fileName)
+    try:
+        src = (readOutputPath(self))["output"]
+        splitOne = fileName.split("/")
+        copyfile(fileName,src + splitOne[1])
+        # remove temp file from the project root skin directory
+        if os.path.isfile(fileName):
+            os.remove(fileName)
+    except IOError:
+         showMessage(self, "File information!", "Something went wrong", "Something happened while copying the output file to the destination. Try again!")
+
