@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="config.json" />
-    <Content Include="images\appicon.png" />
+    <Content Include="images\appicon.ico" />
     <Content Include="skins\pairs.xaml" />
     <Content Include="skins\standard.xaml" />
     <Content Include="storage\test.csv" />

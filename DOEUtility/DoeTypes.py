@@ -41,7 +41,7 @@ def ComboBox(self,dom,param,row,col,attributeName,isMandatory):
     else:
         binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].AvailableItems, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace(" ",""))
        
-    enabled = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace(" ",""))
+    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace(" ",""))
     parent = dom.createElement("i:ComboBox")
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
@@ -51,6 +51,7 @@ def ComboBox(self,dom,param,row,col,attributeName,isMandatory):
     parent.setAttribute('IsEditable', "False")
     parent.setAttribute('CloseDropDownOnTab', "True")
     parent.setAttribute('ItemsSource', "{" + binding + "}")
+    parent.setAttribute('IsEnabled', "{" + editable + "}")
     if eval(isMandatory):
         child = dom.createElement("i:ComboBox.SelectedItem")
         firstChild = dom.createElement("Binding")
@@ -67,4 +68,34 @@ def ComboBox(self,dom,param,row,col,attributeName,isMandatory):
         secondChild.appendChild(thirdChild)
         parent.appendChild(child)
 
+    return parent
+
+def NumericUpDown(self,dom,param,row,col,attributeName,isMandatory):
+    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace(" ",""))
+    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace(" ",""))
+    parent = dom.createElement("i:NumericUpDown")
+    parent.setAttribute('Grid.Row', str(row))
+    parent.setAttribute('Grid.Column', str(col))
+    parent.setAttribute('x:Name', param.replace(" ",""))
+    parent.setAttribute('Style', "{StaticResource TextBlockStyle}")
+    parent.setAttribute('DisplayFormat', "0")
+    parent.setAttribute('RoundingDecimalPlaces', "0")
+    parent.setAttribute('Minimum', "1")
+    parent.setAttribute('Maximum', "100")
+    parent.setAttribute('Increment', "1")
+    parent.setAttribute('IncrementCount', "1")
+    parent.setAttribute('Value', "{" + binding + "}")
+    parent.setAttribute('IsEnabled', "{" + editable + "}")
+    return parent
+
+def CheckBox(self,dom,param,row,col,attributeName,isMandatory):
+    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace(" ",""))
+    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace(" ",""))
+    parent = dom.createElement("CheckBox")
+    parent.setAttribute('Grid.Row', str(row))
+    parent.setAttribute('Grid.Column', str(col))
+    parent.setAttribute('x:Name', param.replace(" ",""))
+    parent.setAttribute('Style', "{StaticResource TextBlockStyle}")
+    parent.setAttribute('IsChecked', "{" + binding + "}")
+    parent.setAttribute('IsEnabled', "{" + editable + "}")
     return parent

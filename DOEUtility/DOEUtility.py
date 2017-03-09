@@ -5,6 +5,7 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from Utility import *
 from builtins import eval
+from Config import *
 
 # custom class
 class XamlWindow(QWidget):
@@ -21,7 +22,7 @@ class XamlWindow(QWidget):
         self.lblAlgoAttribute = QLabel("Algo attribute name structure:")
         self.txtAlgoAttribute = QLineEdit()
         # radio buttons and its groups
-        self.groupBox = QGroupBox("Select Algo Design")
+        self.groupBox = QGroupBox("Select Skin Design")
         self.radioSatndard = QRadioButton("Standard")
         self.radioPairs = QRadioButton("Pairs")
 
@@ -71,7 +72,7 @@ class XamlWindow(QWidget):
     # window design
     def loadWindow(self):
         self.resize(400, 600)
-        self.setWindowTitle("Home")
+        self.setWindowTitle("XAML Generator")
         self.setToolTip("Main window")
         self.setWindowFlags(Qt.CustomizeWindowHint and Qt.WindowMinimizeButtonHint)
         # center the screen
@@ -84,14 +85,14 @@ class XamlWindow(QWidget):
         print("simple window in the GUI")
     # setting up icon
     def setIcon(self):
-        appIcon = QIcon("images/appicon.png")
+        appIcon = QIcon("images/appicon.ico")
         self.setWindowIcon(appIcon)
     # set tooltip
     def setTooltipFont(self):
         QToolTip.setFont(QFont("Decorative",8,QFont.Bold))
 
     # switch dictionary values
-    options = {"DateTime" : DateTime,"TextBlock" : TextBlock,"ComboBox":ComboBox,}
+    options = {"DateTime" : DateTime,"TextBlock" : TextBlock,"ComboBox":ComboBox,"NumericUpDown":NumericUpDown,"CheckBox":CheckBox,}
 
     # generate xaml
     def generate(self):
@@ -103,7 +104,7 @@ class XamlWindow(QWidget):
             fileName = "{}/{}prg.{}".format(splitOne[0],splitTwo[0],splitTwo[1])
             copyfile(baseFileName,fileName)
             # creating dummy ends here
-            csvPath = "storage/test.csv"
+            csvPath = (readOutputPath(self))["csvpath"]
             generateXML(self,fileName,csvPath)
         else:
             showMessage(self,"Mandatory!","Values required to generate XAML","Attribute name structure, row and col fileds are mandatory")

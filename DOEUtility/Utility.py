@@ -59,8 +59,9 @@ def generateXML(self,fileName,csvPath):
         showMessage(self, "File information!", "No such file or directory found ", "No such file or directory found")
 # copy file
 def copyFile(self,fileName):
-     src = readOutputPath(self)
+     src = (readOutputPath(self))["output"]
      splitOne = fileName.split("/")
      copyfile(fileName,src + splitOne[1])
+     # remove temp file from the project root skin directory
      if os.path.isfile(fileName):
          os.remove(fileName)
