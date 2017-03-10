@@ -1,7 +1,7 @@
 ﻿{
   "paths": [
     {
-      "output": "c:/Build/",
+      "output": "C:/Build/",
       "csvpath": "C:/Python/DOE/DoeUtility/DoeUtility/storage/test.csv"
     }
   ]

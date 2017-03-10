@@ -32,7 +32,7 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
             csvPath = (readOutputPath(self))["csvpath"]
             generateXML(self,fileName,csvPath)
         else:
-            showMessage(self,"Mandatory!","Values required to generate XAML","Attribute naming structure, row and column fileds are mandatory.")
+            showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Attribute naming structure, row and column fileds are mandatory.")
 
     # window closing event
     def closeEvent(self,event):
