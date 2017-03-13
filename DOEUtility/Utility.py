@@ -27,7 +27,7 @@ def msgDialog(self,title,msg):
         return "N"
 
  # generate XAML
-def generateXML(self,fileName,csvPath):
+def generateXML(self,fileName,skinName,csvPath):
     try:
         dom = minidom.parse(r"{}".format(fileName))
         for node in dom.getElementsByTagName('Grid'):
@@ -45,7 +45,7 @@ def generateXML(self,fileName,csvPath):
                 # creating cols
                 i = 0
                 currWidth = "Auto"
-                while i < rowCount:
+                while i < colCount:
                     if i == 0:
                         parent = dom.createElement("Grid.ColumnDefinitions")
                     node.appendChild(CreateColumns(self, dom,parent,currWidth))
@@ -56,18 +56,19 @@ def generateXML(self,fileName,csvPath):
                     reader = csv.DictReader(csvfile)
                     for row in reader:
                         node.appendChild(self.options["TextBlock"](self, dom, row["Param"], row["Row"], int(row["Column"]) - 1))
-                        node.appendChild(self.options[row["Type"]](self, dom, row["Param"], row["Row"], row["Column"], attributeName,row["Mandatory"]))
+                        node.appendChild(self.options[row["Type"]](self, dom, row["Param"], row["Row"], row["Column"], attributeName,row["Mandatory"],row["Minimum"],row["Maximum"]))
         dom.writexml(open(fileName, "w"))
-        copyFile(self,fileName)
+        copyFile(self,fileName,skinName)
         showMessage(self, "Information", "Click show details to see the output file path ", (readOutputPath(self))["output"])
     except IOError:
         showMessage(self, "File information!", "No such file or directory found ", "No such file or directory found")
-# copy file
-def copyFile(self,fileName):
+
+# copy and move final outcome to a path configured in the config file
+def copyFile(self,fileName,skinName):
     try:
         src = (readOutputPath(self))["output"]
         splitOne = fileName.split("/")
-        copyfile(fileName,src + splitOne[1])
+        copyfile(fileName,src + skinName)
         # remove temp file from the project root skin directory
         if os.path.isfile(fileName):
             os.remove(fileName)

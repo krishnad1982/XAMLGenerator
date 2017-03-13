@@ -17,7 +17,7 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
        self.btnGenerate.clicked.connect(self.generateXAML)
     
     # switch case for doe datatype functions
-    options = {"DateTime" : DateTime,"TextBlock" : TextBlock,"ComboBox":ComboBox,"NumericUpDown":NumericUpDown,"CheckBox":CheckBox,}
+    options = {"DateTime" : DateTime,"TextBlock" : TextBlock,"ComboBox":ComboBox,"NumericUpDown":NumericUpDown,"CheckBox":CheckBox,"TextBox":TextBox,}
 
     # generate xaml
     def generateXAML(self):
@@ -27,10 +27,11 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
             splitOne = baseFileName.split("/")
             splitTwo = splitOne[1].split(".")
             fileName = "{}/{}prg.{}".format(splitOne[0],splitTwo[0],splitTwo[1])
+            skinName=self.txtSkinName.text()+ ".xaml"
             copyfile(baseFileName,fileName)
             # creating dummy file ends here
             csvPath = (readOutputPath(self))["csvpath"]
-            generateXML(self,fileName,csvPath)
+            generateXML(self,fileName,skinName,csvPath)
         else:
             showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Attribute naming structure, row and column fileds are mandatory.")
 

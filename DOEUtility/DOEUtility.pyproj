@@ -36,6 +36,9 @@
     <Compile Include="Design.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="setup.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Utility.py">
       <SubType>Code</SubType>
     </Compile>
