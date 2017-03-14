@@ -1,5 +1,4 @@
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_GenerateXAML(object):
@@ -72,7 +71,7 @@ class Ui_GenerateXAML(object):
 
     def retranslateUi(self, GenerateXAML):
         _translate = QtCore.QCoreApplication.translate
-        GenerateXAML.setWindowTitle(_translate("GenerateXAML", "Generate XAML"))
+        GenerateXAML.setWindowTitle(_translate("GenerateXAML", "Skin Manager"))
         GenerateXAML.setToolTip(_translate("GenerateXAML", "Main window"))
         self.lblSkin.setText(_translate("GenerateXAML", "Select Skin:"))
         self.txtCol.setPlaceholderText(_translate("GenerateXAML", "Enter number of columns"))

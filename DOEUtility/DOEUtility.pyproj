@@ -56,7 +56,7 @@
     <Content Include="images\appicon.ico" />
     <Content Include="skins\Pairs.xaml" />
     <Content Include="skins\Standard.xaml" />
-    <Content Include="storage\test.csv" />
+    <Content Include="storage\attribute.csv" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

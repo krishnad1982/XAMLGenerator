@@ -2,11 +2,11 @@ import sys
 from cx_Freeze import setup, Executable
 
 company_name="IRESS"
-product_name="XAMLGenerator"
+product_name="DOESkinManager"
 shortcut_table = [
     ("DesktopShortcut",        # Shortcut
      "DesktopFolder",          # Directory_
-     "XAML Generator",           # Name
+     "SkinManager",            # Name
      "TARGETDIR",              # Component_
      "[TARGETDIR]DoeUtility.exe",# Target
      None,                     # Arguments
@@ -43,10 +43,10 @@ base = None
 if sys.platform == "win32":
     base = "Win32GUI"
 
-setup(  name = "XAMLGenerator",
+setup(  name = "SkinManager",
         author="IRESS",
         version = "1.0.0",
-        description = "Iress DOE Skin Generator!",
+        description = "Iress DOE Skin Manager!",
         options = {"bdist_msi":bdist_msi_options,"build_exe": build_exe_options},
         executables = [Executable("DoeUtility.py", base=base)],
         requires=['PyQt5', 'cx_Freeze', 'json']
