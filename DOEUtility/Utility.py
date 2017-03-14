@@ -31,7 +31,7 @@ def generateXML(self,fileName,skinName,csvPath):
     try:
         dom = minidom.parse(r"{}".format(fileName))
         for node in dom.getElementsByTagName('Grid'):
-            if node.getAttribute('x:Name') == "AlgoGrid":
+            if node.getAttribute('x:Name') == readConfigProperties(self)["gridname"]:
                 rowCount = int(self.txtRow.text())
                 colCount = int(self.txtCol.text())
                 attributeName = self.txtAlgoAttribute.text()
@@ -59,14 +59,14 @@ def generateXML(self,fileName,skinName,csvPath):
                         node.appendChild(self.options[row["Type"]](self, dom, row["Param"], row["Row"], row["Column"], attributeName,row["Mandatory"],row["Minimum"],row["Maximum"]))
         dom.writexml(open(fileName, "w"))
         copyFile(self,fileName,skinName)
-        showMessage(self, "Information", "Click show details to see the output file path ", (readOutputPath(self))["output"])
+        showMessage(self, "Information", "Click show details to see the output file path ", (readConfigProperties(self))["output"])
     except IOError:
         showMessage(self, "File information!", "No such file or directory found ", "No such file or directory found")
 
 # copy and move final outcome to a path configured in the config file
 def copyFile(self,fileName,skinName):
     try:
-        src = (readOutputPath(self))["output"]
+        src = (readConfigProperties(self))["output"]
         splitOne = fileName.split("/")
         copyfile(fileName,src + skinName)
         # remove temp file from the project root skin directory

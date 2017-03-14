@@ -70,7 +70,8 @@ def ComboBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum):
 
     return parent
 
-# minimum and maximum values are not mandtory in csv, if their values are "1" and "100" respectively
+# minimum and maximum values are not mandtory in csv, if their values are "1"
+# and "100" respectively
 def NumericUpDown(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum):
     binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace(" ",""))
     editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace(" ",""))

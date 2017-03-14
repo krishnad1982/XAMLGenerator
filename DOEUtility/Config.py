@@ -1,8 +1,12 @@
 import json
 
 # output and csv file paths
-def readOutputPath(self):
+def readConfigProperties(self):
     with open("config.json", encoding="utf-8-sig") as json_data_file:
-        path=json.load(json_data_file)
-        paths={"output":path["paths"][0]["output"],"csvpath":path["paths"][0]["csvpath"]}
-        return paths
+        properties=json.load(json_data_file)
+        properties={
+            "output":properties["paths"][0]["output"],
+            "csvpath":properties["paths"][0]["csvpath"],
+            "gridname":properties["settings"][0]["gridname"]
+            }
+        return properties

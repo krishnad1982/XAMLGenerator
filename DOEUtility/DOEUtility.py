@@ -21,19 +21,44 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
 
     # generate xaml
     def generateXAML(self):
-        if self.txtRow.text() is not "" and self.txtCol.text() is not "" and self.txtAlgoAttribute.text() is not "":
-            baseFileName = "skins/standard.xaml" if self.radioSatndard.isChecked() else "skins/pairs.xaml"
+        if self.txtSkinName.text() is not "" and self.txtRow.text() is not "" and self.txtCol.text() is not "" and self.txtAlgoAttribute.text() is not "" and self.cmbSkins.currentText() != "---Select Skin---":
+            baseFileName = self.cmbSkins.currentText() + ".xaml"
             # creating a dummy file to add algo controls
-            splitOne = baseFileName.split("/")
-            splitTwo = splitOne[1].split(".")
-            fileName = "{}/{}prg.{}".format(splitOne[0],splitTwo[0],splitTwo[1])
-            skinName=self.txtSkinName.text()+ ".xaml"
-            copyfile(baseFileName,fileName)
+            splitOne = baseFileName.split(".")
+            fileName = "{}/{}_Copy.{}".format("./skins",splitOne[0],splitOne[1])
+            skinName = self.txtSkinName.text() + ".xaml"
+            copyfile("./skins/" + baseFileName,fileName)
             # creating dummy file ends here
-            csvPath = (readOutputPath(self))["csvpath"]
+            csvPath = (readConfigProperties(self))["csvpath"]
             generateXML(self,fileName,skinName,csvPath)
         else:
-            showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Attribute naming structure, row and column fileds are mandatory.")
+            showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Skin name, Attribute name, row and column fileds are mandatory.")
+
+    #check skins exist
+    def isSkinsExist(self):
+        files = []
+        if os.path.isdir("skins"):
+            files = list(filter(lambda it: it.endswith(".xaml"), os.listdir("skins")))
+        else:
+            self.cmbSkins.clear()
+            self.cmbSkins.addItem("We could not find skins directory")
+            self.btnGenerate.setEnabled(False)
+            return False
+        if len(files) == 0 :
+            self.cmbSkins.clear()
+            self.cmbSkins.addItem("No skins in the skins directory")
+            self.btnGenerate.setEnabled(False)
+            return False
+        return True
+
+    # fill the skins combobox
+    def fillSkins(self):
+        self.cmbSkins.clear()
+        self.cmbSkins.addItem("---Select Skin---")
+        if self.isSkinsExist():
+            files = filter(lambda it: it.endswith(".xaml"), os.listdir("skins"))
+            strip_list = map(lambda it: it.split(".")[0], files)
+            self.cmbSkins.addItems(list(strip_list))
 
     # window closing event
     def closeEvent(self,event):
@@ -56,6 +81,7 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
 def main():
     myApp = QtWidgets.QApplication(sys.argv)
     form = XamlWindow()
+    form.fillSkins()
     form.show()
     # Execute the Application and Exit
     sys.exit(myApp.exec_())

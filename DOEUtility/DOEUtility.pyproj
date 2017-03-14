@@ -54,8 +54,8 @@
   <ItemGroup>
     <Content Include="config.json" />
     <Content Include="images\appicon.ico" />
-    <Content Include="skins\pairs.xaml" />
-    <Content Include="skins\standard.xaml" />
+    <Content Include="skins\Pairs.xaml" />
+    <Content Include="skins\Standard.xaml" />
     <Content Include="storage\test.csv" />
   </ItemGroup>
   <PropertyGroup>
