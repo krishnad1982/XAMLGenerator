@@ -27,9 +27,16 @@ def msgDialog(self,title,msg):
         return "N"
 
  # generate XAML
-def generateXML(self,fileName,skinName,csvPath):
+def generateXML(self,fileName,skinName,header,version,csvPath):
     try:
         dom = minidom.parse(r"{}".format(fileName))
+
+        # updating the algo header and version info in the group box header
+        # field
+        for node in dom.getElementsByTagName('GroupBox'):
+            if node.getAttribute('x:Name') == readConfigProperties(self)["groupbox"]:
+                node.attributes["Header"].value = header +" - "+ version
+        # adding new attibute details into the grid area
         for node in dom.getElementsByTagName('Grid'):
             if node.getAttribute('x:Name') == readConfigProperties(self)["gridname"]:
                 rowCount = int(self.txtRow.text())

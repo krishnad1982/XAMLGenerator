@@ -528,8 +528,7 @@
             <!--Algo Details Starting-->
             <GroupBox Header="Volume Pair Algo Details" KeyboardNavigation.TabNavigation="Local" Style="{StaticResource GroupBoxStyle}" x:Name="AlgoDetails">
                 <Grid x:Name="AlgoGrid">
-
-                    
+                                        
                 </Grid>
             </GroupBox>
             <!--Ending Algo Details-->

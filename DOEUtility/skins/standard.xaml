@@ -340,7 +340,6 @@
             <!--Algo Details Starting-->
             <GroupBox Header="Timer Algo Details" KeyboardNavigation.TabNavigation="Local" Style="{StaticResource GroupBoxStyle}" x:Name="AlgoDetails">
                 <Grid x:Name="AlgoGrid">
-
                     
                 </Grid>
             </GroupBox>

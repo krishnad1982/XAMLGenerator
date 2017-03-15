@@ -6,6 +6,7 @@ from Config import *
 from Design import Ui_GenerateXAML
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 # custom class
 class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
     # constructor
@@ -15,14 +16,28 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
        # events
        self.btnExit.clicked.connect(self.exitApp)
        self.btnGenerate.clicked.connect(self.generateXAML)
-    
+       # txtAlgoAttribute txtchanged event
+       self.txtAlgoAttribute.textChanged.connect(self.createAlgoHeader)
+       # txtAlgoAttribute foucusoutevent
+       self.txtAlgoAttribute.installEventFilter(self)
+
     # switch case for doe datatype functions
     options = {"DateTime" : DateTime,"TextBlock" : TextBlock,"ComboBox":ComboBox,"NumericUpDown":NumericUpDown,"CheckBox":CheckBox,"TextBox":TextBox,}
 
+    # event filters
+    def eventFilter(self, obj, event):
+        if event.type() == QtCore.QEvent.FocusOut:
+             if obj == self.txtAlgoAttribute:
+                self.createAlgoHeader()
+        return False
+
     # generate xaml
     def generateXAML(self):
-        if self.txtSkinName.text() is not "" and self.txtRow.text() is not "" and self.txtCol.text() is not "" and self.txtAlgoAttribute.text() is not "" and self.cmbSkins.currentText() != "---Select Skin---":
+        if self.txtSkinName.text() is not "" and self.txtRow.text() is not "" and self.txtCol.text() is not "" and self.txtAlgoAttribute.text() is not "" and self.txtHeader.text is not "" and self.cmbSkins.currentText() != "---Select Skin---":
             baseFileName = self.cmbSkins.currentText() + ".xaml"
+            # header and version details
+            header = self.txtHeader.text()
+            version = "Version {}".format(self.txtVersion.text()) if self.txtVersion.text() is not "" else ""
             # creating a dummy file to add algo controls
             splitOne = baseFileName.split(".")
             fileName = "{}/{}_Copy.{}".format("./skins",splitOne[0],splitOne[1])
@@ -30,11 +45,20 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
             copyfile("./skins/" + baseFileName,fileName)
             # creating dummy file ends here
             csvPath = (readConfigProperties(self))["csvpath"]
-            generateXML(self,fileName,skinName,csvPath)
+            generateXML(self,fileName,skinName,header,version,csvPath)
         else:
             showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Skin name, Attribute name, row and column fileds are mandatory.")
 
-    #check skins exist
+    # txtattribute textchanged and focusout event
+    def createAlgoHeader(self):
+        if self.txtAlgoAttribute.text() is not "":
+            attribValues = self.txtAlgoAttribute.text().split("-")
+            if len(attribValues) > 2:
+                self.txtHeader.setText("{} Algo Details".format(attribValues[2]))
+            else:
+                self.txtHeader.setText("")
+
+    # check skins exist
     def isSkinsExist(self):
         files = []
         if os.path.isdir("skins"):

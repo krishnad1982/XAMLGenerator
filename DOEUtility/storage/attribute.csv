@@ -4,14 +4,12 @@ Row,Column,Type,Param,Mandatory,Minimum,Maximum
 2,1,NumericUpDown,Min Dark Fill Qty,True
 3,1,ComboBox,Relative Limit Type,False
 4,1,NumericUpDown,IWouldPrice,False,0,9999999
-5,1,NumericUpDown,Max Dark Exposure,False
-0,3,NumericUpDown,Nighthawk Limit Px,False,0,9999999
-1,3,ComboBox,Auction Type,False
-2,3,NumericUpDown,Relative Limit Offset,False
-3,3,NumericUpDown,Arrival Weight,False,0,10
-4,3,NumericUpDown,VWAP Weight,True,0,10
-5,3,NumericUpDown,Departure Weight,False,0,10
-0,5,NumericUpDown,Max Participation Rate,False
-1,5,ComboBox,Style,False
-2,5,TextBox,Custom Parameters,False
+0,3,NumericUpDown,Max Dark Exposure,False
+1,3,NumericUpDown,Nighthawk Limit Px,False,0,9999999
+2,3,ComboBox,Auction Type,False
+3,3,NumericUpDown,Relative Limit Offset,False
+4,3,NumericUpDown,Max Participation Rate,False
+0,5,ComboBox,Style,False
+1,5,TextBox,Custom Parameters,False
+2,5,ComboBox,VWAP Cross,False,0,100
 3,5,NumericUpDown,Nighthawn Allocation,False,0,100
