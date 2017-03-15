@@ -5,6 +5,7 @@ from builtins import eval
 from Config import *
 from Design import Ui_GenerateXAML
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem
 
 
 # custom class
@@ -20,6 +21,7 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
        self.txtAlgoAttribute.textChanged.connect(self.createAlgoHeader)
        # txtAlgoAttribute foucusoutevent
        self.txtAlgoAttribute.installEventFilter(self)
+       self.createTable()
 
     # switch case for doe datatype functions
     options = {"DateTime" : DateTime,"TextBlock" : TextBlock,"ComboBox":ComboBox,"NumericUpDown":NumericUpDown,"CheckBox":CheckBox,"TextBox":TextBox,}
@@ -31,8 +33,47 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
                 self.createAlgoHeader()
         return False
 
+    def createDatatTypeCombo(self):
+        cmbDataType = QtWidgets.QComboBox()
+        for key,val in sorted(self.options.items()):
+            cmbDataType.addItem(key)
+        return cmbDataType
+
+    def createTable(self):
+       # Create table
+        rowPosition = self.tableWidget.rowCount()
+        self.tableWidget.setCellWidget(0, 2, self.createDatatTypeCombo())
+        #self.tableWidget.setItem(0,0, QTableWidgetItem("krishna"))
+        #self.tableWidget.move(0,0)
+ 
+        # table selection change
+        self.tableWidget.keyPressEvent = self.insertRow
+        self.tableWidget.doubleClicked.connect(self.removeRow)
+
+    def insertRow(self,event):
+        currentColumn = self.tableWidget.currentColumn()
+        if event.key() == QtCore.Qt.Key_Enter:
+            currentRowCount = self.tableWidget.rowCount()
+            self.tableWidget.insertRow(currentRowCount)
+            self.tableWidget.setCellWidget(currentRowCount, 2, self.createDatatTypeCombo())
+            
+            self.tableWidget.focusNextChild()
+        return QTableWidget.keyPressEvent(self.tableWidget, event)
+        
+    def removeRow(self,event):
+        currentRow = self.tableWidget.currentRow()
+        if currentRow is not 0:
+            self.tableWidget.removeRow(currentRow)
+
     # generate xaml
     def generateXAML(self):
+        count = self.tableWidget.rowCount()
+        i = 0
+        while i < count:
+            zero = self.tableWidget.item(i,0).text()
+            two = self.tableWidget.cellWidget(i,2).currentText()
+            i+=1
+            
         if self.txtSkinName.text() is not "" and self.txtRow.text() is not "" and self.txtCol.text() is not "" and self.txtAlgoAttribute.text() is not "" and self.txtHeader.text is not "" and self.cmbSkins.currentText() != "---Select Skin---":
             baseFileName = self.cmbSkins.currentText() + ".xaml"
             # header and version details
