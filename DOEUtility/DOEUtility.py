@@ -4,6 +4,8 @@ from Utility import *
 from builtins import eval
 from Config import *
 from Design import Ui_GenerateXAML
+from General import GeneralWindow
+from About import AboutWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QTableWidget,QTableWidgetItem
 
@@ -21,10 +23,27 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
        self.txtAlgoAttribute.textChanged.connect(self.createAlgoHeader)
        # txtAlgoAttribute foucusoutevent
        self.txtAlgoAttribute.installEventFilter(self)
-       self.createTable()
+       # creating the ui grid if import type is ui
+       if readConfigProperties(self)["importtype"] == "ui":
+           self.createTable()
+       self.hideControls()
+       # triggering menu items
+       self.actionGeneral.triggered.connect(self.showSettings)
+       self.actionAbout.triggered.connect(self.showAbout)
+      
 
     # switch case for doe datatype functions
     options = {"DateTime" : DateTime,"TextBlock" : TextBlock,"ComboBox":ComboBox,"NumericUpDown":NumericUpDown,"CheckBox":CheckBox,"TextBox":TextBox,}
+
+    # show settings window
+    def showSettings(self):
+        self.settings = GeneralWindow()
+        self.settings.show()
+    
+    # show about window
+    def showAbout(self):
+        self.about = AboutWindow()
+        self.about.show()
 
     # event filters
     def eventFilter(self, obj, event):
@@ -33,33 +52,58 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
                 self.createAlgoHeader()
         return False
 
-    def createDatatTypeCombo(self):
+    # datatype list for ui grid
+    def createDatatTypeList(self):
         cmbDataType = QtWidgets.QComboBox()
         for key,val in sorted(self.options.items()):
             cmbDataType.addItem(key)
         return cmbDataType
 
+    # mandatory list for ui grid
+    def createIsMandatoryList(self):
+        cmbMandatory = QtWidgets.QComboBox()
+        cmbMandatory.addItem("False")
+        cmbMandatory.addItem("True")
+        return cmbMandatory
+
+    # hide cols and rows if import type is ui
+    def hideControls(self):
+        if readConfigProperties(self)["importtype"] == "ui":
+            self.lblRow.setEnabled(False)
+            self.lblCol.setEnabled(False)
+            self.txtRow.setEnabled(False)
+            self.txtCol.setEnabled(False)
+        elif readConfigProperties(self)["importtype"] == "csv":
+            self.tableWidget.setEnabled(True)
+
+    # create ui grid with some default values
     def createTable(self):
        # Create table
         rowPosition = self.tableWidget.rowCount()
-        self.tableWidget.setCellWidget(0, 2, self.createDatatTypeCombo())
-        #self.tableWidget.setItem(0,0, QTableWidgetItem("krishna"))
-        #self.tableWidget.move(0,0)
+        self.tableWidget.setCellWidget(0, 2, self.createDatatTypeList())
+        self.tableWidget.setCellWidget(0, 4, self.createIsMandatoryList())
+        self.tableWidget.setItem(0,5, QTableWidgetItem("0"))
+        self.tableWidget.setItem(0,6, QTableWidgetItem("100"))
  
         # table selection change
         self.tableWidget.keyPressEvent = self.insertRow
         self.tableWidget.doubleClicked.connect(self.removeRow)
 
+    # insert rows into the ui grid
     def insertRow(self,event):
         currentColumn = self.tableWidget.currentColumn()
         if event.key() == QtCore.Qt.Key_Enter:
             currentRowCount = self.tableWidget.rowCount()
             self.tableWidget.insertRow(currentRowCount)
-            self.tableWidget.setCellWidget(currentRowCount, 2, self.createDatatTypeCombo())
+            self.tableWidget.setCellWidget(currentRowCount, 2, self.createDatatTypeList())
+            self.tableWidget.setCellWidget(currentRowCount, 4, self.createIsMandatoryList())
+            self.tableWidget.setItem(currentRowCount,5, QTableWidgetItem("0"))
+            self.tableWidget.setItem(currentRowCount,6, QTableWidgetItem("100"))
             
             self.tableWidget.focusNextChild()
         return QTableWidget.keyPressEvent(self.tableWidget, event)
-        
+    
+    # remove rows from the ui grid
     def removeRow(self,event):
         currentRow = self.tableWidget.currentRow()
         if currentRow is not 0:
@@ -67,14 +111,10 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
 
     # generate xaml
     def generateXAML(self):
-        count = self.tableWidget.rowCount()
-        i = 0
-        while i < count:
-            zero = self.tableWidget.item(i,0).text()
-            two = self.tableWidget.cellWidget(i,2).currentText()
-            i+=1
-            
-        if self.txtSkinName.text() is not "" and self.txtRow.text() is not "" and self.txtCol.text() is not "" and self.txtAlgoAttribute.text() is not "" and self.txtHeader.text is not "" and self.cmbSkins.currentText() != "---Select Skin---":
+        if readConfigProperties(self)["importtype"] == "csv" and self.txtRow.text() is not "" and self.txtCol.text() is not "":
+            showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Skin name, Attribute name, row and column fileds are mandatory.")
+            return
+        if self.txtSkinName.text() is not "" and self.txtAlgoAttribute.text() is not "" and self.txtHeader.text is not "" and self.cmbSkins.currentText() != "---Select Skin---":
             baseFileName = self.cmbSkins.currentText() + ".xaml"
             # header and version details
             header = self.txtHeader.text()
@@ -88,7 +128,8 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
             csvPath = (readConfigProperties(self))["csvpath"]
             generateXML(self,fileName,skinName,header,version,csvPath)
         else:
-            showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Skin name, Attribute name, row and column fileds are mandatory.")
+            showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Skin name and Attribute name fileds are mandatory.")
+            return
 
     # txtattribute textchanged and focusout event
     def createAlgoHeader(self):

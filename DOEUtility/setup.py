@@ -2,7 +2,7 @@ import sys
 from cx_Freeze import setup, Executable
 
 company_name="IRESS"
-product_name="DOESkinManager"
+product_name="SkinManager"
 shortcut_table = [
     ("DesktopShortcut",        # Shortcut
      "DesktopFolder",          # Directory_

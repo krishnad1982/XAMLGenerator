@@ -26,7 +26,16 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="About.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Designs\About.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Config.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Designs\__init__.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DoeTypes.py">
@@ -34,6 +43,12 @@
     </Compile>
     <Compile Include="DoeUtility.py" />
     <Compile Include="Design.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Designs\General.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="General.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="setup.py">
@@ -48,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="images\" />
+    <Folder Include="Designs\" />
     <Folder Include="storage\" />
     <Folder Include="skins\" />
   </ItemGroup>

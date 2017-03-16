@@ -35,7 +35,7 @@ def generateXML(self,fileName,skinName,header,version,csvPath):
         # field
         for node in dom.getElementsByTagName('GroupBox'):
             if node.getAttribute('x:Name') == readConfigProperties(self)["groupbox"]:
-                node.attributes["Header"].value = header +" - "+ version
+                node.attributes["Header"].value = header + " - " + version
         # adding new attibute details into the grid area
         for node in dom.getElementsByTagName('Grid'):
             if node.getAttribute('x:Name') == readConfigProperties(self)["gridname"]:
@@ -59,11 +59,26 @@ def generateXML(self,fileName,skinName,header,version,csvPath):
                     currWidth = "2*" if currWidth is "Auto" else "Auto"
                     i+=1
                 # create algo controls
-                with open(csvPath) as csvfile:
-                    reader = csv.DictReader(csvfile)
-                    for row in reader:
-                        node.appendChild(self.options["TextBlock"](self, dom, row["Param"], row["Row"], int(row["Column"]) - 1))
-                        node.appendChild(self.options[row["Type"]](self, dom, row["Param"], row["Row"], row["Column"], attributeName,row["Mandatory"],row["Minimum"],row["Maximum"]))
+                if readConfigProperties(self)["importtype"] == "csv":
+                    with open(csvPath) as csvfile:
+                        reader = csv.DictReader(csvfile)
+                        for row in reader:
+                            node.appendChild(self.options["TextBlock"](self, dom, row["Param"], row["Row"], int(row["Column"]) - 1))
+                            node.appendChild(self.options[row["Type"]](self, dom, row["Param"], row["Row"], row["Column"], attributeName,row["Mandatory"],row["Minimum"],row["Maximum"]))
+                elif readConfigProperties(self)["importtype"] == "ui":
+                    count = self.tableWidget.rowCount()
+                    i = 0
+                    while i < count:
+                        # {0:Row,1:Column,2:DataType,3:AttributeName,4:Mandatory,5:Minimum,6:Maximum}
+                        node.appendChild(self.options["TextBlock"](self, dom, self.tableWidget.item(i,3).text(), self.tableWidget.item(i,0).text(), int(self.tableWidget.item(i,1).text()) - 1))
+                        type = self.tableWidget.cellWidget(i,2).currentText()
+                        node.appendChild(self.options[type](self, dom, self.tableWidget.item(i,3).text(), self.tableWidget.item(i,0).text(), 
+                                                                   self.tableWidget.item(i,1).text(), attributeName, self.tableWidget.item(i,4).text(), self.tableWidget.item(i,5).text(), self.tableWidget.item(i,6).text()))
+                        i+=1
+                else:
+                    showMessage(self, "Settings Info!", "Import type setting not found in the config file", "Use {csv or ui} in the config file")
+                    return
+
         dom.writexml(open(fileName, "w"))
         copyFile(self,fileName,skinName)
         showMessage(self, "Information", "Click show details to see the output file path ", (readConfigProperties(self))["output"])
