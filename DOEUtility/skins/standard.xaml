@@ -115,20 +115,26 @@
         <!--End Of Logo Template Content -->
 
         <!--Destination Template Content -->
-        <ControlTemplate TargetType="ContentControl" x:Key="DestinationInfo">
+        <ControlTemplate x:Key="DestinationInfo" TargetType="ContentControl">
             <Grid x:Name="DestinationGrid">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="4*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Grid.Row="0" Style="{StaticResource TextBlockLeftStyle}" Text="IOS:"/>
-                <i:ComboBox CloseDropDownOnTab="True" Grid.Column="1" Grid.Row="0" IsEditable="False" IsEnabled="{Binding Ios.IsEditable}" IsSorted="True" ItemsSource="{Binding Ios.AvailableItems}" SelectedItem="{Binding Ios.Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" Style="{StaticResource BasicStyle}" VerticalAlignment="Top" x:Name="Ios"/>
-                <TextBlock Grid.Column="0" Grid.Row="1" Style="{StaticResource TextBlockLeftStyle}" Text="Destination:"/>
-                <i:DestinationComboBox CloseDropDownOnTab="True" Grid.Column="1" Grid.Row="1" IsEditable="True" IsEnabled="{Binding Destination.IsEditable}" IsSorted="True" ItemsSource="{Binding Destination.AvailableItems}" SelectedItem="{Binding Destination.Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" Style="{StaticResource BasicStyle}" VerticalAlignment="Top" x:Name="Destination"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource TextBlockLeftStyle}" Text="IOS:"/>
+                <i:ComboBox Grid.Row="0" Grid.Column="1" x:Name="Ios" Style="{StaticResource BasicStyle}" IsEditable="False" 
+                                ItemsSource="{Binding Ios.AvailableItems}" SelectedItem="{Binding Ios.Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" 
+                                IsEnabled="{Binding Ios.IsEditable}" IsSorted="True" CloseDropDownOnTab="True"  VerticalAlignment="Top"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource TextBlockLeftStyle}" Text="Destination:"/>
+                <i:DestinationComboBox Grid.Row="1" Grid.Column="1" x:Name="Destination" Style="{StaticResource BasicStyle}" IsEditable="True"  
+                                ItemsSource="{Binding Destination.AvailableItems}" SelectedItem="{Binding Destination.Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" 
+                                IsEnabled="{Binding Destination.IsEditable}" IsSorted="True" CloseDropDownOnTab="True"  VerticalAlignment="Top"/>
+                <TextBlock x:Name="TxtVersion" Grid.Row="2" Grid.Column="1" Text="" VerticalAlignment="Bottom" HorizontalAlignment="Right" Style="{StaticResource BasicStyle}"></TextBlock>
             </Grid>
         </ControlTemplate>
         <!--End Of Destination Template Content -->

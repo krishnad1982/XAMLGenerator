@@ -1,4 +1,4 @@
-Row,Column,Type,Param,Mandatory,Minimum,Maximum
+Row,Column,Type,Param,Mandatory,Minimum,Maximum,Visibility
 0,1,DateTime,Start Time,False
 1,1,DateTime,End Time,False
 2,1,NumericUpDown,Min Dark Fill Qty,True
@@ -10,6 +10,6 @@ Row,Column,Type,Param,Mandatory,Minimum,Maximum
 3,3,NumericUpDown,Relative Limit Offset,False
 4,3,NumericUpDown,Max Participation Rate,False
 0,5,ComboBox,Style,False
-1,5,TextBox,Custom Parameters,False
+1,5,TextBox,Custom Parameters,False,0,100,Collapsed
 2,5,ComboBox,VWAP Cross,False,0,100
 3,5,NumericUpDown,Nighthawn Allocation,False,0,100

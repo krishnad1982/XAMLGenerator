@@ -9,11 +9,13 @@ def readConfigProperties(self):
             "csvpath":properties["paths"][0]["csvpath"],
             "groupbox":properties["settings"][0]["groupbox"],
             "gridname":properties["settings"][0]["gridname"],
-            "importtype":properties["settings"][0]["importtype"]
+            "importtype":properties["settings"][0]["importtype"],
+            "skinversion":properties["settings"][0]["skinversion"],
+            "versiontextblock":properties["settings"][0]["versiontextblock"]
             }
         return properties
 
-def saveConfigDetails(self,output,csvpath,importtype):
+def saveConfigDetails(self,output,csvpath,importtype,groupbox,gridname,versiontextblock,skinversion):
     data = {}
     data['paths'] = []
     data['settings'] = []
@@ -22,9 +24,11 @@ def saveConfigDetails(self,output,csvpath,importtype):
     'csvpath': csvpath
     })
     data['settings'].append({  
-    'groupbox': 'AlgoDetails',
-    'gridname': 'AlgoGrid',
-    'importtype': importtype
+    'importtype': importtype,
+    'groupbox': groupbox,
+    'gridname': gridname,
+    'versiontextblock':versiontextblock,
+    'skinversion':skinversion
     })
     with open("config.json",mode="w") as write_json:
         json.dump(data, write_json)

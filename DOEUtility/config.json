@@ -1,1 +1,1 @@
-{"paths": [{"csvpath": "C:/Python/DOE/DoeUtility/DoeUtility/storage/attribute.csv", "output": "C:/Build/"}], "settings": [{"importtype": "ui", "gridname": "AlgoGrid", "groupbox": "AlgoDetails"}]}
+{"paths": [{"csvpath": "C:/Python/DOE/DoeUtility/DoeUtility/storage/attribute.csv", "output": "C:/Build/"}], "settings": [{"versiontextblock": "TxtVersion", "groupbox": "AlgoDetails", "importtype": "csv", "skinversion": "1.0.0", "gridname": "AlgoGrid"}]}

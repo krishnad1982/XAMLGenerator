@@ -18,10 +18,15 @@ class GeneralWindow(QtWidgets.QMainWindow,Ui_GeneralWindow):
             self.rdCsv.setChecked(True)
         else:
             self.rdGui.setChecked(True)
+        self.txtGroupName.setText(readConfigProperties(self)["groupbox"])
+        self.txtGridName.setText(readConfigProperties(self)["gridname"])
+        self.txtVersionBlock.setText(readConfigProperties(self)["versiontextblock"])
+        self.txtSkin.setText(readConfigProperties(self)["skinversion"])
     # update config details
     def saveConfig(self):
-        importtype = "csv" if self.rdCsv.isChecked() else "ui"
-        saveConfigDetails(self,self.txtOutput.text(),self.txtCsv.text(),importtype)
+        importtype = "csv" if self.rdCsv.isChecked() else "gui"
+        saveConfigDetails(self,self.txtOutput.text(),self.txtCsv.text(),importtype,
+                          self.txtGroupName.text(),self.txtGridName.text(),self.txtVersionBlock.text(),self.txtSkin.text())
         showMessage(self, "Information!", "Successfully updated, restart the app.", "Restart the app!")
         QtWidgets.QApplication.instance().quit()
 

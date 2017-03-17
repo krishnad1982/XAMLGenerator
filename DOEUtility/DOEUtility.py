@@ -23,14 +23,15 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
        self.txtAlgoAttribute.textChanged.connect(self.createAlgoHeader)
        # txtAlgoAttribute foucusoutevent
        self.txtAlgoAttribute.installEventFilter(self)
-       # creating the ui grid if import type is ui
-       if readConfigProperties(self)["importtype"] == "ui":
+       # creating the ui grid if import type is gui
+       if readConfigProperties(self)["importtype"] == "gui":
            self.createTable()
        self.hideControls()
        # triggering menu items
        self.actionGeneral.triggered.connect(self.showSettings)
        self.actionAbout.triggered.connect(self.showAbout)
-      
+       # set skin version from config
+       self.txtVersion.setText(readConfigProperties(self)["skinversion"])
 
     # switch case for doe datatype functions
     options = {"DateTime" : DateTime,"TextBlock" : TextBlock,"ComboBox":ComboBox,"NumericUpDown":NumericUpDown,"CheckBox":CheckBox,"TextBox":TextBox,}
@@ -52,36 +53,40 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
                 self.createAlgoHeader()
         return False
 
-    # datatype list for ui grid
+    # datatype list for gui grid
     def createDatatTypeList(self):
         cmbDataType = QtWidgets.QComboBox()
         for key,val in sorted(self.options.items()):
             cmbDataType.addItem(key)
         return cmbDataType
 
-    # mandatory list for ui grid
+    # mandatory list for gui grid
     def createIsMandatoryList(self):
         cmbMandatory = QtWidgets.QComboBox()
         cmbMandatory.addItem("False")
         cmbMandatory.addItem("True")
         return cmbMandatory
 
-    # hide cols and rows if import type is ui
-    def hideControls(self):
-        if readConfigProperties(self)["importtype"] == "ui":
-            self.lblRow.setEnabled(False)
-            self.lblCol.setEnabled(False)
-            self.txtRow.setEnabled(False)
-            self.txtCol.setEnabled(False)
-        elif readConfigProperties(self)["importtype"] == "csv":
-            self.tableWidget.setEnabled(True)
+    # visibility list for gui grid
+    def createVisibilityList(self):
+        cmbVisibility = QtWidgets.QComboBox()
+        cmbVisibility.addItem("Visible")
+        cmbVisibility.addItem("Collapsed")
+        cmbVisibility.addItem("Hidden")
+        return cmbVisibility
 
-    # create ui grid with some default values
+    # hide cols and rows if import type is csv
+    def hideControls(self):
+        if readConfigProperties(self)["importtype"] == "csv":
+            self.tableWidget.setEnabled(False)
+
+    # create gui grid with default values
     def createTable(self):
        # Create table
         rowPosition = self.tableWidget.rowCount()
         self.tableWidget.setCellWidget(0, 2, self.createDatatTypeList())
         self.tableWidget.setCellWidget(0, 4, self.createIsMandatoryList())
+        self.tableWidget.setCellWidget(0, 7, self.createVisibilityList())
         self.tableWidget.setItem(0,5, QTableWidgetItem("0"))
         self.tableWidget.setItem(0,6, QTableWidgetItem("100"))
  
@@ -89,7 +94,7 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
         self.tableWidget.keyPressEvent = self.insertRow
         self.tableWidget.doubleClicked.connect(self.removeRow)
 
-    # insert rows into the ui grid
+    # insert rows into the gui grid
     def insertRow(self,event):
         currentColumn = self.tableWidget.currentColumn()
         if event.key() == QtCore.Qt.Key_Enter:
@@ -97,28 +102,28 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
             self.tableWidget.insertRow(currentRowCount)
             self.tableWidget.setCellWidget(currentRowCount, 2, self.createDatatTypeList())
             self.tableWidget.setCellWidget(currentRowCount, 4, self.createIsMandatoryList())
+            self.tableWidget.setCellWidget(currentRowCount, 7, self.createVisibilityList())
             self.tableWidget.setItem(currentRowCount,5, QTableWidgetItem("0"))
             self.tableWidget.setItem(currentRowCount,6, QTableWidgetItem("100"))
             
             self.tableWidget.focusNextChild()
         return QTableWidget.keyPressEvent(self.tableWidget, event)
     
-    # remove rows from the ui grid
+    # remove rows from the gui grid
     def removeRow(self,event):
         currentRow = self.tableWidget.currentRow()
         if currentRow is not 0:
-            self.tableWidget.removeRow(currentRow)
+            respone = msgDialog(self,"Information","Do you really want to delete this row?")
+            if respone == "Y":
+                self.tableWidget.removeRow(currentRow)
 
     # generate xaml
     def generateXAML(self):
-        if readConfigProperties(self)["importtype"] == "csv" and self.txtRow.text() is not "" and self.txtCol.text() is not "":
-            showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Skin name, Attribute name, row and column fileds are mandatory.")
-            return
-        if self.txtSkinName.text() is not "" and self.txtAlgoAttribute.text() is not "" and self.txtHeader.text is not "" and self.cmbSkins.currentText() != "---Select Skin---":
+        if self.cmbSkins.currentText() != "---Select Skin---" and self.txtSkinName.text() is not "" and self.txtAlgoAttribute.text() is not "" and self.txtRow.text() is not "" and self.txtCol.text() is not "":
             baseFileName = self.cmbSkins.currentText() + ".xaml"
             # header and version details
             header = self.txtHeader.text()
-            version = "Version {}".format(self.txtVersion.text()) if self.txtVersion.text() is not "" else ""
+            version = "Version - {}".format(self.txtVersion.text()) if self.txtVersion.text() is not "" else ""
             # creating a dummy file to add algo controls
             splitOne = baseFileName.split(".")
             fileName = "{}/{}_Copy.{}".format("./skins",splitOne[0],splitOne[1])
@@ -128,7 +133,7 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
             csvPath = (readConfigProperties(self))["csvpath"]
             generateXML(self,fileName,skinName,header,version,csvPath)
         else:
-            showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Skin name and Attribute name fileds are mandatory.")
+            showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Skins, Skin name, Attribute Prefix, Rows and Columns are mandatory.")
             return
 
     # txtattribute textchanged and focusout event
@@ -187,6 +192,7 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
 def main():
     myApp = QtWidgets.QApplication(sys.argv)
     form = XamlWindow()
+    # fill ksns in the combobox
     form.fillSkins()
     form.show()
     # Execute the Application and Exit
