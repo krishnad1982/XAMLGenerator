@@ -36,6 +36,32 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
     # switch case for doe datatype functions
     options = {"DateTime" : DateTime,"TextBlock" : TextBlock,"ComboBox":ComboBox,"NumericUpDown":NumericUpDown,"CheckBox":CheckBox,"TextBox":TextBox,}
 
+    # autocalculate gui rows and columns
+    def autoCalcualteTotalRowsAndColumns(self,csvPath):
+        try:
+            lstrow = []
+            lstcol = []
+            if readConfigProperties(self)["importtype"] == "csv":
+                with open(csvPath) as csvfile:
+                    reader = csv.DictReader(csvfile)
+                    for row in reader:
+                        lstrow.append(row["Row"])
+                        lstcol.append(row["Column"])
+            else:
+                count = self.tableWidget.rowCount()
+                i = 0
+                while i < count:
+                    lstrow.append(self.tableWidget.item(i,0).text())
+                    lstcol.append(self.tableWidget.item(i,1).text())
+                    i+=1
+            totrow = int(max(lstrow)) + 1
+            totcol = int(max(lstcol)) + 1
+            self.txtRow.setText(str(totrow))
+            self.txtCol.setText(str(totcol))
+        except:
+            showMessage(self, "Information!", "Something went wrong", "Auto row and column calculations went wrong. Please provide values in the row and column textboxes!")
+            return
+
     # show settings window
     def showSettings(self):
         self.settings = GeneralWindow()
@@ -51,6 +77,8 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
         if event.type() == QtCore.QEvent.FocusOut:
              if obj == self.txtAlgoAttribute:
                 self.createAlgoHeader()
+             elif obj == self.tableWidget:
+                self.testing()
         return False
 
     # datatype list for gui grid
@@ -105,8 +133,7 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
             self.tableWidget.setCellWidget(currentRowCount, 7, self.createVisibilityList())
             self.tableWidget.setItem(currentRowCount,5, QTableWidgetItem("0"))
             self.tableWidget.setItem(currentRowCount,6, QTableWidgetItem("100"))
-            
-            self.tableWidget.focusNextChild()
+            self.tableWidget.selectRow(currentRowCount)
         return QTableWidget.keyPressEvent(self.tableWidget, event)
     
     # remove rows from the gui grid
@@ -119,7 +146,12 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
 
     # generate xaml
     def generateXAML(self):
-        if self.cmbSkins.currentText() != "---Select Skin---" and self.txtSkinName.text() is not "" and self.txtAlgoAttribute.text() is not "" and self.txtRow.text() is not "" and self.txtCol.text() is not "":
+        if self.cmbSkins.currentText() != "---Select Skin---" and self.txtSkinName.text() is not "" and self.txtAlgoAttribute.text() is not "":
+            # assign csv path
+            csvPath = (readConfigProperties(self))["csvpath"]
+            if self.txtRow.text() == "" and self.txtCol.text() == "":
+                # auto rows and columns calculation
+                self.autoCalcualteTotalRowsAndColumns(csvPath)
             baseFileName = self.cmbSkins.currentText() + ".xaml"
             # header and version details
             header = self.txtHeader.text()
@@ -129,8 +161,7 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
             fileName = "{}/{}_Copy.{}".format("./skins",splitOne[0],splitOne[1])
             skinName = self.txtSkinName.text() + ".xaml"
             copyfile("./skins/" + baseFileName,fileName)
-            # creating dummy file ends here
-            csvPath = (readConfigProperties(self))["csvpath"]
+           
             generateXML(self,fileName,skinName,header,version,csvPath)
         else:
             showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Skins, Skin name, Attribute Prefix, Rows and Columns are mandatory.")
@@ -192,7 +223,7 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
 def main():
     myApp = QtWidgets.QApplication(sys.argv)
     form = XamlWindow()
-    # fill ksns in the combobox
+    # fill skins in the combobox
     form.fillSkins()
     form.show()
     # Execute the Application and Exit

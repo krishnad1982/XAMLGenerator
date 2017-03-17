@@ -1,5 +1,6 @@
 Row,Column,Type,Param,Mandatory,Minimum,Maximum,Visibility
 0,1,DateTime,Start Time,False
+0,0,TextBlock,Target Strategy,False,,,Collapsed
 1,1,DateTime,End Time,False
 2,1,NumericUpDown,Min Dark Fill Qty,True
 3,1,ComboBox,Relative Limit Type,False

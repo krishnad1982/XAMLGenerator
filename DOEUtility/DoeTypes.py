@@ -10,15 +10,18 @@ def CreateColumns(self,dom,parent,currWidth):
     parent.appendChild(child)
     return parent
 
-def TextBlock(self,dom,param,row,col,isMandaory,minimum,maximum,visibility):
+def TextBlock(self,dom,param,row,col,attributeName,isMandaory,minimum,maximum,visibility):
+    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value".format(attributeName,param.replace(" ",""))
     parent = dom.createElement("TextBlock")
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
     parent.setAttribute('x:Name', "Lbl{}".format(param.replace(" ","")))
     parent.setAttribute('Style', "{StaticResource TextBlockStyle}")
-    parent.setAttribute('Text', "{}:".format(param))
-    if visibility!="Visible":
+    if visibility != "Visible":
         parent.setAttribute('Visibility',visibility)
+        parent.setAttribute('Text', "{" + binding + "}")
+    else:
+        parent.setAttribute('Text', "{}:".format(param))
     return parent
 
 def DateTime(self,dom,param,row,col,attributeName,isMandaory,minimum,maximum,visibility):
@@ -34,7 +37,7 @@ def DateTime(self,dom,param,row,col,attributeName,isMandaory,minimum,maximum,vis
     parent.setAttribute('IsTimePicker', "True")
     parent.setAttribute('SelectedDateTime', "{" + binding + "}")
     parent.setAttribute('IsEnabled', "{" + editable + "}")
-    if visibility!="Visible":
+    if visibility != "Visible":
         parent.setAttribute('Visibility',visibility)
     return parent
 
@@ -56,7 +59,7 @@ def ComboBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,vi
     parent.setAttribute('CloseDropDownOnTab', "True")
     parent.setAttribute('ItemsSource', "{" + itemSource + "}")
     parent.setAttribute('IsEnabled', "{" + editable + "}")
-    if visibility!="Visible":
+    if visibility != "Visible":
         parent.setAttribute('Visibility',visibility)
     if eval(isMandatory):
         child = dom.createElement("i:ComboBox.SelectedItem")
@@ -94,7 +97,7 @@ def NumericUpDown(self,dom,param,row,col,attributeName,isMandatory,minimum,maxim
     parent.setAttribute('IncrementCount', "1")
     parent.setAttribute('Value', "{" + binding + "}")
     parent.setAttribute('IsEnabled', "{" + editable + "}")
-    if visibility!="Visible":
+    if visibility != "Visible":
         parent.setAttribute('Visibility',visibility)
     return parent
 
@@ -108,7 +111,7 @@ def CheckBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,vi
     parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('IsChecked', "{" + binding + "}")
     parent.setAttribute('IsEnabled', "{" + editable + "}")
-    if visibility!="Visible":
+    if visibility != "Visible":
         parent.setAttribute('Visibility',visibility)
     return parent
 
@@ -125,7 +128,7 @@ def TextBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,vis
     parent.setAttribute('x:Name', param.replace(" ",""))
     parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('IsEnabled', "{" + editable + "}")
-    if visibility!="Visible":
+    if visibility != "Visible":
         parent.setAttribute('Visibility',visibility)
 
     if eval(isMandatory):

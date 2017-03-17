@@ -66,25 +66,27 @@ def generateXML(self,fileName,skinName,header,version,csvPath):
                     with open(csvPath) as csvfile:
                         reader = csv.DictReader(csvfile)
                         for row in reader:
-                            visibility="Visible" if row["Visibility"]==None or row["Visibility"]=="" else  row["Visibility"]
-                            minimum="0" if row["Minimum"]==None or row["Minimum"]=="" else  row["Minimum"]
-                            maximum="100" if row["Maximum"]==None or row["Maximum"]=="" else  row["Maximum"]
-                            node.appendChild(self.options["TextBlock"](self, dom, row["Param"], row["Row"], int(row["Column"]) - 1, row["Mandatory"], minimum, maximum, visibility))
+                            visibility = "Visible" if row["Visibility"] == None or row["Visibility"] == "" else  row["Visibility"]
+                            minimum = "0" if row["Minimum"] == None or row["Minimum"] == "" else  row["Minimum"]
+                            maximum = "100" if row["Maximum"] == None or row["Maximum"] == "" else  row["Maximum"]
+                            if visibility == "Visible":
+                                node.appendChild(self.options["TextBlock"](self, dom, row["Param"], row["Row"], int(row["Column"]) - 1,attributeName, row["Mandatory"], minimum, maximum, visibility))
                             node.appendChild(self.options[row["Type"]](self, dom, row["Param"], row["Row"], row["Column"], attributeName, row["Mandatory"], minimum, maximum, visibility))
                 elif readConfigProperties(self)["importtype"] == "gui":
                     count = self.tableWidget.rowCount()
                     i = 0
                     while i < count:
                         # {0:Row,1:Column,2:DataType,3:AttributeName,4:Mandatory,5:Minimum,6:Maximum,7:visibility}
-                        row=self.tableWidget.item(i,0).text()
-                        col=self.tableWidget.item(i,1).text()
+                        row = self.tableWidget.item(i,0).text()
+                        col = self.tableWidget.item(i,1).text()
                         type = self.tableWidget.cellWidget(i,2).currentText()
-                        param=self.tableWidget.item(i,3).text()
-                        mandatory=self.tableWidget.cellWidget(i,4).currentText()
-                        min=self.tableWidget.item(i,5).text()
-                        max=self.tableWidget.item(i,6).text()
+                        param = self.tableWidget.item(i,3).text()
+                        mandatory = self.tableWidget.cellWidget(i,4).currentText()
+                        min = self.tableWidget.item(i,5).text()
+                        max = self.tableWidget.item(i,6).text()
                         visibility = self.tableWidget.cellWidget(i,7).currentText()
-                        node.appendChild(self.options["TextBlock"](self, dom, param,row, int(col) - 1,True,0, 100,visibility))
+                        if visibility == "Visible":
+                            node.appendChild(self.options["TextBlock"](self, dom, param,row, int(col) - 1,attributeName,mandatory,0, 100,visibility))
                         node.appendChild(self.options[type](self, dom, param, row, col, attributeName, mandatory, min, max,visibility))
                         i+=1
                 else:
