@@ -163,6 +163,8 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
             copyfile("./skins/" + baseFileName,fileName)
            
             generateXML(self,fileName,skinName,header,version,csvPath)
+            self.txtRow.setText("")
+            self.txtCol.setText("")
         else:
             showMessage(self,"Mandatory!","All the fields are mandatory to generate XAML","Skins, Skin name, Attribute Prefix, Rows and Columns are mandatory.")
             return
