@@ -69,25 +69,31 @@ def generateXML(self,fileName,skinName,header,version,csvPath):
                             visibility = "Visible" if row["Visibility"] == None or row["Visibility"] == "" else  row["Visibility"]
                             minimum = "0" if row["Minimum"] == None or row["Minimum"] == "" else  row["Minimum"]
                             maximum = "100" if row["Maximum"] == None or row["Maximum"] == "" else  row["Maximum"]
+                            increment = "1" if row["Increment"] == None or row["Increment"] == "" else  row["Increment"]
+                            rounding = "0" if row["Rounding"] == None or row["Rounding"] == "" else  row["Rounding"]
+                            displayformat = "0" if row["DisplayFormat"] == None or row["DisplayFormat"] == "" else  row["DisplayFormat"]
                             if visibility == "Visible":
-                                node.appendChild(self.options["TextBlock"](self, dom, row["Param"], row["Row"], int(row["Column"]) - 1,attributeName, row["Mandatory"], minimum, maximum, visibility))
-                            node.appendChild(self.options[row["Type"]](self, dom, row["Param"], row["Row"], row["Column"], attributeName, row["Mandatory"], minimum, maximum, visibility))
+                                node.appendChild(self.options["TextBlock"](self, dom, row["Param"], row["Row"], int(row["Column"]) - 1,attributeName, row["Mandatory"], minimum, maximum,increment,rounding,displayformat,visibility))
+                            node.appendChild(self.options[row["Type"]](self, dom, row["Param"], row["Row"], row["Column"], attributeName, row["Mandatory"], minimum, maximum,increment,rounding,displayformat, visibility))
                 elif readConfigProperties(self)["importtype"] == "gui":
                     count = self.tableWidget.rowCount()
                     i = 0
                     while i < count:
-                        # {0:Row,1:Column,2:DataType,3:AttributeName,4:Mandatory,5:Minimum,6:Maximum,7:visibility}
+                        # {0:Row,1:Column,2:DataType,3:AttributeName,4:Mandatory,5:Minimum,6:Maximum,7:Increment,8:Rounding,9:DisplayFormat,10:Visibility}
                         row = self.tableWidget.item(i,0).text()
                         col = self.tableWidget.item(i,1).text()
                         type = self.tableWidget.cellWidget(i,2).currentText()
                         param = self.tableWidget.item(i,3).text()
                         mandatory = self.tableWidget.cellWidget(i,4).currentText()
-                        min = self.tableWidget.item(i,5).text()
-                        max = self.tableWidget.item(i,6).text()
-                        visibility = self.tableWidget.cellWidget(i,7).currentText()
+                        min = "0" if self.tableWidget.item(i,5) == None or self.tableWidget.item(i,5).text() == "" else  self.tableWidget.item(i,5).text()
+                        max = "100" if self.tableWidget.item(i,6) == None or self.tableWidget.item(i,6).text() == "" else  self.tableWidget.item(i,6).text()
+                        increment = "1" if self.tableWidget.item(i,7) == None or self.tableWidget.item(i,7).text() == "" else  self.tableWidget.item(i,7).text()
+                        rounding = "0" if self.tableWidget.item(i,8) == None or self.tableWidget.item(i,8).text() == "" else  self.tableWidget.item(i,8).text()
+                        displayformat = "0" if self.tableWidget.item(i,9) == None or self.tableWidget.item(i,9).text() == "" else  self.tableWidget.item(i,9).text()
+                        visibility = self.tableWidget.cellWidget(i,10).currentText()
                         if visibility == "Visible":
-                            node.appendChild(self.options["TextBlock"](self, dom, param,row, int(col) - 1,attributeName,mandatory,0, 100,visibility))
-                        node.appendChild(self.options[type](self, dom, param, row, col, attributeName, mandatory, min, max,visibility))
+                            node.appendChild(self.options["TextBlock"](self, dom, param,row, int(col) - 1,attributeName,mandatory,0, 100,increment,rounding,displayformat,visibility))
+                        node.appendChild(self.options[type](self, dom, param, row, col, attributeName, mandatory, min, max,increment,rounding,displayformat,visibility))
                         i+=1
                 else:
                     showMessage(self, "Settings Info!", "Import type setting not found in the config file", "Use {csv or gui} in the config file")

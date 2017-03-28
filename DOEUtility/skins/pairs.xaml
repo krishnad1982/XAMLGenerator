@@ -445,7 +445,7 @@
                     </i:NumericUpDown.Style>
                 </i:NumericUpDown>
                 <TextBlock Grid.Column="2" Grid.Row="1" Style="{StaticResource TextBlockStyle}" Text="Account:" x:Name="LBlAccount"/>
-                <i:AccountComboBox AutomationProperties.AutomationId="AccountCode" Grid.Column="3" Grid.Row="1" IsEditable="True" IsEnabled="{Binding AccountCode.IsEditable}" IsSorted="True" ItemsSource="{Binding AccountCode.AvailableItems}" SelectedItem="{Binding AccountCode.Value, ValidatesOnExceptions=True, ValidatesOnDataErrors=True}" Style="{StaticResource BasicStyle}" Text="{Binding AccountCode.Value, ValidatesOnExceptions=True, ValidatesOnDataErrors=True}" x:Name="Account"/>
+                <i:AccountComboBox AutomationProperties.AutomationId="AccountCode" Grid.Column="3" Grid.Row="1" IsEditable="True" IsEnabled="{Binding AccountCode.IsEditable}" IsSorted="True" ItemsSource="{Binding AccountCode.AvailableItems}" SelectedItem="{Binding AccountCode.Value, ValidatesOnExceptions=True, ValidatesOnDataErrors=True}" Style="{StaticResource BasicStyle}" Text="{Binding AccountCode.Value, ValidatesOnExceptions=True, ValidatesOnDataErrors=True}" x:Name="Account" Ios="{Binding Ios.Value}"/>
 
             </Grid>
         </ControlTemplate>

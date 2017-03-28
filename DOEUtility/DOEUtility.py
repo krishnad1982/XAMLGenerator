@@ -114,10 +114,8 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
         rowPosition = self.tableWidget.rowCount()
         self.tableWidget.setCellWidget(0, 2, self.createDatatTypeList())
         self.tableWidget.setCellWidget(0, 4, self.createIsMandatoryList())
-        self.tableWidget.setCellWidget(0, 7, self.createVisibilityList())
-        self.tableWidget.setItem(0,5, QTableWidgetItem("0"))
-        self.tableWidget.setItem(0,6, QTableWidgetItem("100"))
- 
+        self.tableWidget.setCellWidget(0, 10, self.createVisibilityList())
+        self.tableWidget.setColumnWidth(3,250) # increse the attribute name column width
         # table selection change
         self.tableWidget.keyPressEvent = self.insertRow
         self.tableWidget.doubleClicked.connect(self.removeRow)
@@ -130,10 +128,9 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
             self.tableWidget.insertRow(currentRowCount)
             self.tableWidget.setCellWidget(currentRowCount, 2, self.createDatatTypeList())
             self.tableWidget.setCellWidget(currentRowCount, 4, self.createIsMandatoryList())
-            self.tableWidget.setCellWidget(currentRowCount, 7, self.createVisibilityList())
-            self.tableWidget.setItem(currentRowCount,5, QTableWidgetItem("0"))
-            self.tableWidget.setItem(currentRowCount,6, QTableWidgetItem("100"))
+            self.tableWidget.setCellWidget(currentRowCount, 10, self.createVisibilityList())
             self.tableWidget.selectRow(currentRowCount)
+            self.tableWidget.setColumnWidth(3,250) # increse the attribute name column width
         return QTableWidget.keyPressEvent(self.tableWidget, event)
     
     # remove rows from the gui grid
