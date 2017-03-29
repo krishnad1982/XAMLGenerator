@@ -11,26 +11,28 @@ def CreateColumns(self,dom,parent,currWidth):
     return parent
 
 def TextBlock(self,dom,param,row,col,attributeName,isMandaory,minimum,maximum,increment,rounding,displayformat,visibility):
-    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value".format(attributeName,param.replace("%","").replace(" ",""))
+    pName = param
+    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value".format(attributeName,param.replace("%","Percent").replace(" ",""))
     parent = dom.createElement("TextBlock")
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
-    parent.setAttribute('x:Name', "Lbl{}".format(param.replace("%","").replace(" ","")))
+    parent.setAttribute('x:Name', "Lbl{}".format(param.replace("%","Percent").replace(" ","")))
     parent.setAttribute('Style', "{StaticResource TextBlockStyle}")
     if visibility != "Visible":
         parent.setAttribute('Visibility',visibility)
         parent.setAttribute('Text', "{" + binding + "}")
     else:
-        parent.setAttribute('Text', "{}:".format(param))
+        parent.setAttribute('Text', "{}:".format(pName))
     return parent
 
 def DateTime(self,dom,param,row,col,attributeName,isMandaory,minimum,maximum,increment,rounding,displayformat,visibility):
-    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace("%","").replace(" ",""))
-    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace("%","").replace(" ",""))
+    pName = param.replace("%","Percent").replace(" ","")
+    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,pName)
+    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,pName)
     parent = dom.createElement("i:DateTimePicker")
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
-    parent.setAttribute('x:Name', param.replace("%","").replace(" ",""))
+    parent.setAttribute('x:Name', pName)
     parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('Focusable', "False")
     parent.setAttribute('IsDatePicker', "False")
@@ -42,17 +44,18 @@ def DateTime(self,dom,param,row,col,attributeName,isMandaory,minimum,maximum,inc
     return parent
 
 def ComboBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,increment,rounding,displayformat,visibility):
+    pName = param.replace("%","Percent").replace(" ","")
     binding = ""
     if eval(isMandatory):
-        binding = "ExternalAlgoProperties[(i:Description){}-{}].Value".format(attributeName,param.replace("%","").replace(" ",""))
+        binding = "ExternalAlgoProperties[(i:Description){}-{}].Value".format(attributeName,pName)
     
-    itemSource = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].AvailableItems, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace("%","").replace(" ",""))
+    itemSource = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].AvailableItems, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,pName)
        
-    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace("%","").replace(" ",""))
+    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,pName)
     parent = dom.createElement("i:ComboBox")
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
-    parent.setAttribute('x:Name', param.replace("%","").replace(" ",""))
+    parent.setAttribute('x:Name', pName)
     parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('IsSorted', "False")
     parent.setAttribute('IsEditable', "False")
@@ -72,7 +75,7 @@ def ComboBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,in
         secondChild = dom.createElement("Binding.ValidationRules")
         firstChild.appendChild(secondChild)
         thirdChild = dom.createElement("i:ValueEmptyValidationRule")
-        thirdChild.setAttribute('ElementId', param.replace("%","").replace(" ",""))
+        thirdChild.setAttribute('ElementId', pName)
         thirdChild.setAttribute('ValidatesOnTargetUpdated', 'True')
         secondChild.appendChild(thirdChild)
         parent.appendChild(child)
@@ -82,12 +85,13 @@ def ComboBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,in
 # minimum and maximum values are not mandtory in csv, if their values are "1"
 # and "100" respectively
 def NumericUpDown(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,increment,rounding,displayformat,visibility):
-    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace("%","").replace(" ",""))
-    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace("%","").replace(" ",""))
+    pName = param.replace("%","Percent").replace(" ","")
+    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,pName)
+    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,pName)
     parent = dom.createElement("i:NumericUpDown")
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
-    parent.setAttribute('x:Name', param.replace("%","").replace(" ",""))
+    parent.setAttribute('x:Name', pName)
     parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('DisplayFormat', "0" if displayformat is None or "" else displayformat)
     parent.setAttribute('RoundingDecimalPlaces', "0" if rounding is None or "" else rounding)
@@ -102,12 +106,13 @@ def NumericUpDown(self,dom,param,row,col,attributeName,isMandatory,minimum,maxim
     return parent
 
 def CheckBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,increment,rounding,displayformat,visibility):
-    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace("%","").replace(" ",""))
-    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace("%","").replace(" ",""))
+    pName = param.replace("%","Percent").replace(" ","")
+    binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,pName)
+    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,pName)
     parent = dom.createElement("CheckBox")
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
-    parent.setAttribute('x:Name', param.replace("%","").replace(" ",""))
+    parent.setAttribute('x:Name', pName)
     parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('IsChecked', "{" + binding + "}")
     parent.setAttribute('IsEnabled', "{" + editable + "}")
@@ -116,16 +121,17 @@ def CheckBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,in
     return parent
 
 def TextBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,increment,rounding,displayformat,visibility):
+    pName = param.replace("%","Percent").replace(" ","")
     binding = ""
     if eval(isMandatory):
-        binding = "ExternalAlgoProperties[(i:Description){}-{}].Value".format(attributeName,param.replace("%","").replace(" ",""))
+        binding = "ExternalAlgoProperties[(i:Description){}-{}].Value".format(attributeName,pName)
     else:
-        binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,param.replace("%","").replace(" ",""))
-    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,param.replace("%","").replace(" ",""))
+        binding = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].Value, ValidatesOnDataErrors=True, ValidatesOnExceptions=True".format(attributeName,pName)
+    editable = "Binding Path=ExternalAlgoProperties[(i:Description){}-{}].IsEditable".format(attributeName,pName)
     parent = dom.createElement("TextBox")
     parent.setAttribute('Grid.Row', str(row))
     parent.setAttribute('Grid.Column', str(col))
-    parent.setAttribute('x:Name', param.replace("%","").replace(" ",""))
+    parent.setAttribute('x:Name', pName)
     parent.setAttribute('Style', "{StaticResource BasicStyle}")
     parent.setAttribute('IsEnabled', "{" + editable + "}")
     if visibility != "Visible":
@@ -142,7 +148,7 @@ def TextBox(self,dom,param,row,col,attributeName,isMandatory,minimum,maximum,inc
         secondChild = dom.createElement("Binding.ValidationRules")
         firstChild.appendChild(secondChild)
         thirdChild = dom.createElement("i:ValueEmptyValidationRule")
-        thirdChild.setAttribute('ElementId', param.replace("%","").replace(" ",""))
+        thirdChild.setAttribute('ElementId', pName)
         thirdChild.setAttribute('ValidatesOnTargetUpdated', 'True')
         secondChild.appendChild(thirdChild)
         parent.appendChild(child)
