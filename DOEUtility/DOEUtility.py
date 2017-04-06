@@ -19,6 +19,12 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
        # events
        self.btnExit.clicked.connect(self.exitApp)
        self.btnGenerate.clicked.connect(self.generateXAML)
+
+       # txtSkinName txtchanged event
+       self.txtSkinName.textChanged.connect(self.createAttributeName)
+       # txtSkinName foucusoutevent
+       self.txtSkinName.installEventFilter(self)
+
        # txtAlgoAttribute txtchanged event
        self.txtAlgoAttribute.textChanged.connect(self.createAlgoHeader)
        # txtAlgoAttribute foucusoutevent
@@ -77,8 +83,8 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
         if event.type() == QtCore.QEvent.FocusOut:
              if obj == self.txtAlgoAttribute:
                 self.createAlgoHeader()
-             elif obj == self.tableWidget:
-                self.testing()
+             elif obj == self.txtSkinName:
+                self.createAttributeName()
         return False
 
     # datatype list for gui grid
@@ -174,6 +180,13 @@ class XamlWindow(QtWidgets.QMainWindow,Ui_GenerateXAML):
                 self.txtHeader.setText("{} Algo Details".format(attribValues[2]))
             else:
                 self.txtHeader.setText("")
+
+    # txtskin textchanged and focusout event
+    def createAttributeName(self):
+        attribValues = self.txtSkinName.text().replace("_","-")
+        self.txtAlgoAttribute.setText(attribValues)
+        if len(attribValues) == 0:
+            self.txtAlgoAttribute.setText("")
 
     # check skins exist
     def isSkinsExist(self):
